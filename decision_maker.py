@@ -218,6 +218,7 @@ class DecisionMaker:
 
         potential_pot = max(0.0, pot_size + amount_to_call)
         cost = max(0.0, amount_to_call)
+        spr = bankroll / pot_size if pot_size and pot_size > 0 else 0.0
         ev = self.calculate_ev(equity_pct, potential_pot, cost)
 
         if ev < 0:
@@ -229,13 +230,10 @@ class DecisionMaker:
             return 'Call'
 
         if ev >= self.raise_threshold and self.is_range_wide(active_range):
-            # Determine sizing based on EV strength and simple board texture proxy
-            # Stronger EV -> larger sizing
-            # All-in sizing if EV is very strong, or if the call amount commits a
-            # large portion of the bankroll (pot-committed).
-            if ev >= self.raise_threshold * 3 or (bankroll > 0 and cost >= bankroll * 0.4):
+            # SPR-based sizing buckets for postflop decisions
+            if spr <= 0.4:
                 return 'Raise_AllIn'
-            if ev >= self.raise_threshold * 1.5:
+            if spr <= 6.0:
                 return 'Raise_Pot'
             return 'Raise_Half'
 

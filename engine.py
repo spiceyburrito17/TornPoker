@@ -89,6 +89,7 @@ class OverlayEngine:
         # Default hero position for preflop decisions. Adjust as needed.
         self.hero_position = 'BTN'
         self.current_street = Street.PREFLOP
+        self.current_recommendation = 'WAIT'
         # Debounce / stability tracking to avoid acting on transient UI animations
         self.stable_frames = 0
         self.REQUIRED_STABLE_FRAMES = 3
@@ -134,6 +135,18 @@ class OverlayEngine:
         elif count == 5:
             return Street.RIVER
         return Street.PREFLOP
+
+    def _get_action_color(self, action: str) -> tuple:
+        if not action:
+            return (255, 255, 255)
+        action_lower = action.lower()
+        if 'fold' in action_lower:
+            return (0, 0, 255)
+        if 'call' in action_lower or 'check' in action_lower:
+            return (0, 255, 0)
+        if 'raise' in action_lower:
+            return (0, 215, 255)
+        return (255, 255, 255)
 
     def _ocr_loop(self):
         while self.running:
@@ -275,6 +288,30 @@ class OverlayEngine:
                     cv2.putText(disp, f"board_cards: {board_cards}", (10, 140), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
                     if hero_equity is not None:
                         cv2.putText(disp, f"Req Eq: {req_equity:.1f}% | Hero Eq: {hero_equity:.1f}%", (10, 160), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
+                    final_action = getattr(self, 'current_recommendation', 'WAIT') or 'WAIT'
+                    action_text = f"MOVE: {final_action.upper()}"
+                    font = cv2.FONT_HERSHEY_SIMPLEX
+                    font_scale = 1.5
+                    thickness = 4
+                    text_size, baseline = cv2.getTextSize(action_text, font, font_scale, thickness)
+                    x, y = 50, 420
+                    cv2.rectangle(
+                        disp,
+                        (x - 12, y - text_size[1] - 14),
+                        (x + text_size[0] + 12, y + baseline + 8),
+                        (0, 0, 0),
+                        cv2.FILLED,
+                    )
+                    cv2.putText(
+                        disp,
+                        action_text,
+                        (x, y),
+                        font,
+                        font_scale,
+                        self._get_action_color(final_action),
+                        thickness,
+                        cv2.LINE_AA,
+                    )
                     cv2.imshow(self.debug_window_name, disp)
                     cv2.waitKey(1)
                 except Exception:
@@ -621,6 +658,7 @@ class OverlayEngine:
         return '\n'.join(lines)
 
     def _try_make_decision(self, hero_cards, board, stack, pot_size, amount_to_call) -> None:
+        self.current_recommendation = 'WAIT'
         if not hero_cards:
             return
 
@@ -633,28 +671,29 @@ class OverlayEngine:
                 vs_position=None,
                 effective_stack_bb=100.0,
             )
-            decision = self.decision_maker.choose_preflop_action(hero_cards, context)
-            
+            final_action = self.decision_maker.choose_preflop_action(hero_cards, context)
+            self.current_recommendation = final_action
+
             # Log preflop decision
             combo = DecisionMaker._cards_to_combo(hero_cards)
-            print(f"[PREFLOP] hero_cards={hero_cards} combo={combo} context={context} decision={decision}")
-            
-            # Route decision directly to execution
-            if decision == 'Raise':
+            print(f"[PREFLOP] hero_cards={hero_cards} combo={combo} context={context} decision={final_action}")
+
+            if final_action == 'Raise':
                 raise_coord = self.button_coords.get('raise')
                 if raise_coord:
                     self.safe_execute_decision(raise_coord[0], raise_coord[1])
                 return
-            elif decision == 'Call':
+            elif final_action == 'Call':
                 call_coord = self.button_coords.get('call')
                 if call_coord:
                     self.safe_execute_decision(call_coord[0], call_coord[1])
                 return
-            elif decision == 'Fold':
+            elif final_action == 'Fold':
                 fold_coord = self.button_coords.get('fold')
                 if fold_coord:
                     self.safe_execute_decision(fold_coord[0], fold_coord[1])
                 return
+            return
 
         # Post-flop: use equity + EV decision
         if pot_size is None or amount_to_call is None:
@@ -664,7 +703,7 @@ class OverlayEngine:
             return
         active_range = self.range_matrix.get_active_combos(opp_id)
         equity = self.solver.estimate_equity(hero_cards, board, active_range)
-        decision = self.decision_maker.choose_action(
+        final_action = self.decision_maker.choose_action(
             equity_pct=equity,
             pot_size=pot_size,
             amount_to_call=amount_to_call,
@@ -672,9 +711,11 @@ class OverlayEngine:
             active_range=active_range,
             current_street=self.current_street,
         )
+        self.current_recommendation = final_action
+
         # Handle sized raises: e.g., 'Raise_Pot', 'Raise_Half', 'Raise_AllIn'
-        if isinstance(decision, str) and decision.startswith('Raise'):
-            parts = decision.split('_')
+        if isinstance(final_action, str) and final_action.startswith('Raise'):
+            parts = final_action.split('_')
             size_key = parts[1].lower() if len(parts) > 1 else 'pot'
             sizing_map_keys = {
                 'half': 'raise_half',
@@ -686,7 +727,6 @@ class OverlayEngine:
             sizing_coord = self.button_coords.get(sizing_key)
             raise_coord = self.button_coords.get('raise')
             if sizing_coord and raise_coord:
-                # Click sizing then raise
                 try:
                     self.ghost.click_sequence([
                         {'x': sizing_coord[0], 'y': sizing_coord[1]},
@@ -695,12 +735,11 @@ class OverlayEngine:
                 except Exception:
                     pass
                 return
-            # Fallback: click raise only
             if raise_coord:
                 self.safe_execute_decision(raise_coord[0], raise_coord[1])
             return
 
-        target = self.button_coords.get(decision.lower())
+        target = self.button_coords.get(final_action.lower())
         if target:
             self.safe_execute_decision(target[0], target[1])
 
