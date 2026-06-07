@@ -3,6 +3,7 @@ import math
 import re
 import threading
 import time
+from enum import Enum, auto
 
 import cv2
 import easyocr
@@ -15,6 +16,12 @@ from ghost import GhostArm
 from monte_carlo import MonteCarloSolver
 from range_matrix import RangeMatrix
 from tracker import TableTracker
+
+class Street(Enum):
+    PREFLOP = auto()
+    FLOP = auto()
+    TURN = auto()
+    RIVER = auto()
 
 OCR_KEYS = {
     'hero': re.compile(r'Hero\s*:\s*([AKQJT2-9][shdc])\s*([AKQJT2-9][shdc])', re.IGNORECASE),
@@ -48,6 +55,12 @@ class OverlayEngine:
         self.ghost = GhostArm()
         self.ocr_reader = easyocr.Reader(['en'], gpu=True)
         self.screen_capture = mss.MSS()
+        self.debug_window_name = 'TornPoker Debug'
+        cv2.namedWindow(self.debug_window_name, cv2.WINDOW_NORMAL)
+        # Place the debug window on the second monitor if available.
+        monitors = self.screen_capture.monitors
+        second_monitor = monitors[1] if len(monitors) > 1 else monitors[0]
+        cv2.moveWindow(self.debug_window_name, second_monitor['left'] + 50, second_monitor['top'] + 50)
         self.rank_templates = {}
         for rank in ['A', 'K', 'Q', 'J', 'T', '9', '8', '7', '6', '5', '4', '3', '2']:
             template_path = f'templates/{rank}.png'
@@ -75,6 +88,7 @@ class OverlayEngine:
         }
         # Default hero position for preflop decisions. Adjust as needed.
         self.hero_position = 'BTN'
+        self.current_street = Street.PREFLOP
         # Debounce / stability tracking to avoid acting on transient UI animations
         self.stable_frames = 0
         self.REQUIRED_STABLE_FRAMES = 3
@@ -108,6 +122,18 @@ class OverlayEngine:
         new_x = self.win_x + dx
         new_y = self.win_y + dy
         self.root.geometry(f'+{new_x}+{new_y}')
+
+    def _determine_current_street(self, board_cards: list) -> Street:
+        count = len(board_cards) if board_cards is not None else 0
+        if count == 0:
+            return Street.PREFLOP
+        elif count == 3:
+            return Street.FLOP
+        elif count == 4:
+            return Street.TURN
+        elif count == 5:
+            return Street.RIVER
+        return Street.PREFLOP
 
     def _ocr_loop(self):
         while self.running:
@@ -187,6 +213,7 @@ class OverlayEngine:
 
                 hero_cards = self._read_hole_cards(frame)
                 board_cards = self._read_board_cards(frame)
+                self.current_street = self._determine_current_street(board_cards)
                 frame_gray = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
                 dealer_seat = self._find_dealer_seat(frame_gray)
                 active_seats = self._get_active_seats(frame_gray)
@@ -196,6 +223,25 @@ class OverlayEngine:
                     # Persist hero position for decision routing
                     if hero_position is not None:
                         self.hero_position = hero_position
+
+                text_blob = '\n'.join(text_lines)
+                parsed = self._parse_ocr_text(text_blob)
+                if hero_cards:
+                    parsed['hero_cards'] = hero_cards
+                if board_cards:
+                    parsed['board'] = board_cards
+
+                req_equity = 0.0
+                hero_equity = None
+                if board_cards and hero_cards and parsed.get('amount_to_call') is not None and parsed.get('pot_size') is not None:
+                    pot_size_val = parsed['pot_size']
+                    amount_to_call_val = parsed['amount_to_call']
+                    potential_pot = pot_size_val + amount_to_call_val
+                    req_equity = (amount_to_call_val / potential_pot) * 100 if potential_pot > 0 else 0.0
+                    opp_id = next(iter(self.tracker.players), None)
+                    if opp_id:
+                        active_range = self.range_matrix.get_active_combos(opp_id)
+                        hero_equity = self.solver.estimate_equity(hero_cards, board_cards, active_range)
 
                 try:
                     stable_frames = getattr(self, 'stable_frames', 0)
@@ -215,26 +261,24 @@ class OverlayEngine:
                     except Exception:
                         snapshot_text = str(stable_snapshot)
 
+                    street_text = f"STREET: {self.current_street.name}"
                     status_line = f"stable_frames: {stable_frames} | stable_snapshot: {snapshot_text}"
                     hero_position_text = f"hero_pos: {hero_position or 'Unknown'}"
                     active_seats_text = f"active_seats: {active_seats}"
                     current_line = f"cur_amt: {cur_amount} cur_pot: {cur_pot} buttons: {list(button_coords.keys())}"
-                    cv2.putText(disp, status_line, (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255), 1)
-                    cv2.putText(disp, current_line, (10, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255), 1)
-                    cv2.putText(disp, active_seats_text, (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
-                    cv2.putText(disp, hero_position_text, (10, 80), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
-                    cv2.putText(disp, f"hero_cards: {hero_cards}", (10, 100), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
-                    cv2.putText(disp, f"board_cards: {board_cards}", (10, 120), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
-                    cv2.imshow('TornPoker Debug', disp)
+                    cv2.putText(disp, street_text, (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255), 1)
+                    cv2.putText(disp, status_line, (10, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255), 1)
+                    cv2.putText(disp, current_line, (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255), 1)
+                    cv2.putText(disp, active_seats_text, (10, 80), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
+                    cv2.putText(disp, hero_position_text, (10, 100), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
+                    cv2.putText(disp, f"hero_cards: {hero_cards}", (10, 120), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
+                    cv2.putText(disp, f"board_cards: {board_cards}", (10, 140), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
+                    if hero_equity is not None:
+                        cv2.putText(disp, f"Req Eq: {req_equity:.1f}% | Hero Eq: {hero_equity:.1f}%", (10, 160), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
+                    cv2.imshow(self.debug_window_name, disp)
                     cv2.waitKey(1)
                 except Exception:
                     pass
-                text_blob = '\n'.join(text_lines)
-                parsed = self._parse_ocr_text(text_blob)
-                if hero_cards:
-                    parsed['hero_cards'] = hero_cards
-                if board_cards:
-                    parsed['board'] = board_cards
                 with self.ocr_lock:
                     self.latest_frame_data = parsed
                     self.button_coords = button_coords
@@ -580,8 +624,8 @@ class OverlayEngine:
         if not hero_cards:
             return
 
-        # Pre-flop bypass: use PFR chart and avoid Monte Carlo
-        if board is not None and len(board) == 0:
+        # Preflop bypass: use PFR chart and avoid Monte Carlo
+        if self.current_street == Street.PREFLOP:
             # Build preflop context
             context = PreflopContext(
                 position=self.hero_position,
@@ -626,6 +670,7 @@ class OverlayEngine:
             amount_to_call=amount_to_call,
             bankroll=float(stack or 0),
             active_range=active_range,
+            current_street=self.current_street,
         )
         # Handle sized raises: e.g., 'Raise_Pot', 'Raise_Half', 'Raise_AllIn'
         if isinstance(decision, str) and decision.startswith('Raise'):

@@ -209,6 +209,7 @@ class DecisionMaker:
         amount_to_call: float,
         bankroll: float,
         active_range: Iterable[str],
+        current_street=None,
     ) -> str:
         if amount_to_call is None or pot_size is None:
             return 'Fold'
