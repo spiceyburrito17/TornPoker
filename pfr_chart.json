@@ -1,0 +1,102 @@
+{
+  "cash_100bb": {
+    "UTG": {
+      "open": [
+        "AA", "KK", "QQ", "JJ", "TT",
+        "AKs", "AQs", "AKo"
+      ],
+      "vs_open": {
+        "call_default": [],
+        "3bet_default": []
+      },
+      "vs_3bet": ["AA", "KK", "QQ", "AKs", "AKo"]
+    },
+    "HJ": {
+      "open": [
+        "AA", "KK", "QQ", "JJ", "TT", "99",
+        "AKs", "AQs", "AJs", "KQs", "AKo", "AQo"
+      ],
+      "vs_open": {
+        "call_UTG": ["JJ", "TT", "99", "AQs", "AJs", "KQs", "QJs"],
+        "3bet_UTG": ["AA", "KK", "QQ", "AKs", "AKo", "AQs"],
+        "call_default": [],
+        "3bet_default": []
+      },
+      "vs_3bet": ["AA", "KK", "QQ", "AKs", "AKo"]
+    },
+    "CO": {
+      "open": [
+        "AA", "KK", "QQ", "JJ", "TT", "99", "88", "77",
+        "AKs", "AQs", "AJs", "ATs", "KQs", "KJs", "QJs", "JTs",
+        "AKo", "AQo", "AJo", "KQo"
+      ],
+      "vs_open": {
+        "call_UTG": ["99", "88", "77", "66", "AQs", "AJs", "ATs", "KQs", "QJs", "JTs"],
+        "3bet_UTG": ["AA", "KK", "QQ", "JJ", "AKs", "AKo", "AQs", "AQo"],
+        "call_HJ": ["99", "88", "77", "66", "AQs", "AJs", "ATs", "KQs", "QJs", "JTs"],
+        "3bet_HJ": ["AA", "KK", "QQ", "JJ", "AKs", "AKo", "AQs", "AQo"],
+        "call_default": [],
+        "3bet_default": []
+      },
+      "vs_3bet": ["AA", "KK", "QQ", "AKs", "AKo"]
+    },
+    "BTN": {
+      "open": [
+        "AA", "KK", "QQ", "JJ", "TT", "99", "88", "77", "66",
+        "AKs", "AQs", "AJs", "ATs", "A9s", "A8s", "A7s", "A5s",
+        "KQs", "KJs", "KTs", "QJs", "QTs", "JTs", "T9s",
+        "AKo", "AQo", "AJo", "KQo"
+      ],
+      "vs_open": {
+        "call_UTG": ["99", "88", "77", "66", "55", "44", "AQs", "AJs", "ATs", "A9s", "KQs", "KJs", "QJs", "JTs"],
+        "3bet_UTG": ["AA", "KK", "QQ", "JJ", "AKs", "AKo", "AQs", "AQo", "AJs"],
+        "call_HJ": ["99", "88", "77", "66", "55", "AQs", "AJs", "ATs", "KQs", "QJs", "JTs"],
+        "3bet_HJ": ["AA", "KK", "QQ", "JJ", "AKs", "AKo", "AQs", "AQo"],
+        "call_CO": ["99", "88", "77", "66", "55", "44", "AQs", "AJs", "ATs", "A9s", "KQs", "KJs", "QJs", "JTs"],
+        "3bet_CO": ["AA", "KK", "QQ", "JJ", "AKs", "AKo", "AQs", "AQo", "AJs"],
+        "call_default": [],
+        "3bet_default": []
+      },
+      "vs_3bet": ["AA", "KK", "QQ", "AKs", "AKo"]
+    },
+    "SB": {
+      "open": [
+        "AA", "KK", "QQ", "JJ", "TT", "99", "88", "77", "66", "55",
+        "AKs", "AQs", "AJs", "ATs", "A9s", "A8s", "A7s", "A6s", "A5s",
+        "KQs", "KJs", "KTs", "K9s", "QJs", "QTs", "JTs", "T9s", "98s",
+        "AKo", "AQo", "AJo", "ATo", "KQo", "KJo"
+      ],
+      "vs_open": {
+        "call_UTG": ["99", "88", "77", "66", "55", "AQs", "AJs", "ATs", "A9s", "KQs", "KJs", "QJs", "JTs"],
+        "3bet_UTG": ["AA", "KK", "QQ", "JJ", "AKs", "AKo", "AQs", "AQo"],
+        "call_HJ": ["99", "88", "77", "66", "55", "AQs", "AJs", "ATs", "A9s", "KQs", "KJs", "QJs", "JTs"],
+        "3bet_HJ": ["AA", "KK", "QQ", "JJ", "AKs", "AKo", "AQs", "AQo"],
+        "call_CO": ["99", "88", "77", "66", "55", "AQs", "AJs", "ATs", "A9s", "KQs", "KJs", "QJs", "JTs"],
+        "3bet_CO": ["AA", "KK", "QQ", "JJ", "AKs", "AKo", "AQs", "AQo"],
+        "call_BTN": ["99", "88", "77", "66", "55", "AQs", "AJs", "ATs", "A9s", "KQs", "KJs", "QJs", "JTs"],
+        "3bet_BTN": ["AA", "KK", "QQ", "JJ", "AKs", "AKo", "AQs", "AQo"],
+        "call_default": [],
+        "3bet_default": []
+      },
+      "vs_3bet": ["AA", "KK", "QQ", "AKs", "AKo"]
+    },
+    "BB": {
+      "open": [],
+      "vs_open": {
+        "call_UTG": ["77", "66", "55", "44", "33", "22", "AJs", "ATs", "A9s", "A8s", "KJs", "QJs", "JTs"],
+        "3bet_UTG": ["AA", "KK", "QQ", "JJ", "AKs", "AKo", "AQs", "AQo", "AJs"],
+        "call_HJ": ["77", "66", "55", "44", "33", "22", "AJs", "ATs", "A9s", "A8s", "KJs", "QJs", "JTs"],
+        "3bet_HJ": ["AA", "KK", "QQ", "JJ", "AKs", "AKo", "AQs", "AQo", "AJs"],
+        "call_CO": ["77", "66", "55", "44", "33", "22", "AJs", "ATs", "A9s", "A8s", "KJs", "QJs", "JTs"],
+        "3bet_CO": ["AA", "KK", "QQ", "JJ", "AKs", "AKo", "AQs", "AQo", "AJs"],
+        "call_BTN": ["77", "66", "55", "44", "33", "22", "AJs", "ATs", "A9s", "A8s", "KJs", "QJs", "JTs"],
+        "3bet_BTN": ["AA", "KK", "QQ", "JJ", "AKs", "AKo", "AQs", "AQo", "AJs"],
+        "call_SB": ["77", "66", "55", "44", "33", "22", "AJs", "ATs", "A9s", "A8s", "KJs", "QJs", "JTs"],
+        "3bet_SB": ["AA", "KK", "QQ", "JJ", "AKs", "AKo", "AQs", "AQo", "AJs"],
+        "call_default": [],
+        "3bet_default": []
+      },
+      "vs_3bet": ["AA", "KK", "QQ", "AKs", "AKo"]
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "players": {
+    "Your": {
+      "hands": 1,
+      "vpip": 483,
+      "pfr": 0,
+      "bets": 483,
+      "raises": 0,
+      "calls": 0,
+      "folds": 0,
+      "aggression_factor": 483.0,
+      "profile": "MANIAC",
+      "vpip_rate": 46800.0,
+      "pfr_rate": 0.0
+    }
+  }
+}
