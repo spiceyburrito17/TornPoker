@@ -53,14 +53,14 @@ class OverlayEngine:
         self.solver = MonteCarloSolver(trials=1000)
         self.tracker = TableTracker()
         self.ghost = GhostArm()
-        self.ocr_reader = easyocr.Reader(['en'], gpu=True)
         self.screen_capture = mss.MSS()
         self.debug_window_name = 'TornPoker Debug'
-        cv2.namedWindow(self.debug_window_name, cv2.WINDOW_NORMAL)
-        # Place the debug window on the second monitor if available.
-        monitors = self.screen_capture.monitors
-        second_monitor = monitors[1] if len(monitors) > 1 else monitors[0]
-        cv2.moveWindow(self.debug_window_name, second_monitor['left'] + 50, second_monitor['top'] + 50)
+        
+        # --- BACKGROUND LOAD FIX ---
+        self.ocr_reader = None
+        self._ocr_ready = False
+        threading.Thread(target=self._init_ocr, daemon=True).start()
+        self._cv2_window_created = False
         self.rank_templates = {}
         for rank in ['A', 'K', 'Q', 'J', 'T', '9', '8', '7', '6', '5', '4', '3', '2']:
             template_path = f'templates/{rank}.png'
@@ -107,6 +107,12 @@ class OverlayEngine:
         self._start_ocr_worker()
         self.root.after(30, self._main_tick)
 
+    def _init_ocr(self):
+        print("[SYSTEM] Loading EasyOCR models... (Please wait 15-30 seconds)")
+        self.ocr_reader = easyocr.Reader(['en'], gpu=True)
+        self._ocr_ready = True
+        print("[SYSTEM] EasyOCR Loaded! Engine is starting...")
+
     def _start_ocr_worker(self):
         worker = threading.Thread(target=self._ocr_loop, daemon=True)
         worker.start()
@@ -150,6 +156,18 @@ class OverlayEngine:
 
     def _ocr_loop(self):
         while self.running:
+            # 1. Wait for OCR to finish loading
+            if not getattr(self, '_ocr_ready', False):
+                time.sleep(0.5)
+                continue
+
+            # 2. Safely create the OpenCV window on the first active frame
+            if not getattr(self, '_cv2_window_created', False):
+                cv2.namedWindow(self.debug_window_name, cv2.WINDOW_NORMAL)
+                monitors = self.screen_capture.monitors
+                target = monitors[1] if len(monitors) > 1 else monitors[0]
+                cv2.moveWindow(self.debug_window_name, target['left'] + 50, target['top'] + 50)
+                self._cv2_window_created = True
             try:
                 frame = self._grab_screen()
                 text_results = self.ocr_reader.readtext(frame, detail=1, paragraph=False)
