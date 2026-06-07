@@ -108,18 +108,17 @@ class MonteCarloSolver:
     def _generate_offsuit_combos(self, pair: str, blocked: set) -> List[Tuple[int, int]]:
         hi, lo = pair[0].upper(), pair[1].upper()
         combos = []
-        for i, suit1 in enumerate(SUITS):
-            for suit2 in SUITS[i + 1:]:
+        # Generate all cross-suit combinations: for each suit of the high card,
+        # pair it with every different suit of the low card (4 * 3 = 12 combos).
+        for suit1 in SUITS:
+            for suit2 in SUITS:
+                if suit1 == suit2:
+                    continue
                 c1 = Card.new(hi + suit1)
                 c2 = Card.new(lo + suit2)
                 if c1 in blocked or c2 in blocked:
                     continue
                 combos.append((c1, c2))
-                c1b = Card.new(hi + suit2)
-                c2b = Card.new(lo + suit1)
-                if c1b in blocked or c2b in blocked:
-                    continue
-                combos.append((c1b, c2b))
         return combos
 
     def _cards_overlap(self, hole: Tuple[int, int], blocked: set) -> bool:

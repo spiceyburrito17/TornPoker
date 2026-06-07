@@ -230,7 +230,9 @@ class DecisionMaker:
         if ev >= self.raise_threshold and self.is_range_wide(active_range):
             # Determine sizing based on EV strength and simple board texture proxy
             # Stronger EV -> larger sizing
-            if ev >= self.raise_threshold * 3 or (bankroll > 0 and ev >= bankroll * 0.5):
+            # All-in sizing if EV is very strong, or if the call amount commits a
+            # large portion of the bankroll (pot-committed).
+            if ev >= self.raise_threshold * 3 or (bankroll > 0 and cost >= bankroll * 0.4):
                 return 'Raise_AllIn'
             if ev >= self.raise_threshold * 1.5:
                 return 'Raise_Pot'

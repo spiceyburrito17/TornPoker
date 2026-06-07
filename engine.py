@@ -193,6 +193,9 @@ class OverlayEngine:
                 hero_position = None
                 if dealer_seat is not None:
                     hero_position = self.tracker.calculate_hero_position(active_seats, dealer_seat)
+                    # Persist hero position for decision routing
+                    if hero_position is not None:
+                        self.hero_position = hero_position
 
                 try:
                     stable_frames = getattr(self, 'stable_frames', 0)
@@ -236,7 +239,8 @@ class OverlayEngine:
                     self.latest_frame_data = parsed
                     self.button_coords = button_coords
                 time.sleep(0.03)
-            except Exception:
+            except Exception as e:
+                print(f"OCR Error: {e}")
                 time.sleep(0.05)
 
     def _grab_screen(self) -> np.ndarray:
@@ -631,12 +635,9 @@ class OverlayEngine:
                 'half': 'raise_half',
                 'pot': 'raise_pot',
                 'allin': 'raise_allin',
-                'allin': 'raise_allin',
-                'allin': 'raise_allin',
-                'allin': 'raise_allin',
-                'allin': 'raise_allin'
+                'all': 'raise_allin'
             }
-            sizing_key = f"raise_{size_key}"
+            sizing_key = sizing_map_keys.get(size_key, 'raise_pot')
             sizing_coord = self.button_coords.get(sizing_key)
             raise_coord = self.button_coords.get('raise')
             if sizing_coord and raise_coord:
