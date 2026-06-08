@@ -797,6 +797,10 @@ class OverlayEngine:
             f'| MDF: {mdf_text} | Pos: {ip_label}'
         )
 
+        # Show current recommendation prominently
+        rec = getattr(self, 'current_recommendation', 'WAIT') or 'WAIT'
+        lines.append(f'>>> {rec} <<<')
+
         bb_100 = self.session_logger.get_bb_per_100()
         hands_count = len(self.session_logger._hands)
         lines.append(f'Session: {hands_count} hands | BB/100: {bb_100:+.1f}')
