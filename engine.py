@@ -801,9 +801,14 @@ class OverlayEngine:
             lines.append(
                 f'Opp ({opp_id}): {profile} | '
                 f'VPIP={vpip:.0f}% PFR={pfr:.0f}% '
-                f'RangeMult={rw_mult:.2f} AggMult={ag_mult:.2f}'
+                f'RW={rw_mult:.2f} AG={ag_mult:.2f}'
             )
-            active_range = self.range_matrix.get_active_combos(opp_id)
+        else:
+            lines.append('Opp: UNKNOWN | VPIP=50% PFR=25%')
+
+        if hero_cards and board:
+            if not active_range:
+                active_range = self.range_matrix.hand_order[:len(self.range_matrix.hand_order) // 2]
             equity = self.solver.estimate_equity(hero_cards, board, active_range, trials=1000)
 
         if pot_size is not None and amount_to_call is not None:
@@ -824,9 +829,9 @@ class OverlayEngine:
             dealer_seat  = getattr(self, '_last_dealer_seat', None)
         ip_label = 'IP' if self.tracker.is_hero_in_position(active_seats, dealer_seat) else 'OOP'
         lines.append(
-            f'Equity: {equity_text} | PotOdds: {pot_odds_text} '
-            f'| MDF: {mdf_text} | Pos: {ip_label}'
+            f'Equity: {equity_text} | PotOdds: {pot_odds_text} | MDF: {mdf_text}'
         )
+        lines.append(f'Pos: {ip_label}')
 
         # Show current recommendation prominently
         rec = getattr(self, 'current_recommendation', 'WAIT') or 'WAIT'
