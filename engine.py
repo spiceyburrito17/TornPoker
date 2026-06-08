@@ -899,13 +899,16 @@ class OverlayEngine:
         if amount_to_call is None:
             amount_to_call = 0.0
         opp_id = self.tracker.get_primary_opponent()
-        if not opp_id:
-            print(f'[DECISION SKIP] no primary opponent found')
-            return
-
-        # Phase 1: pull VPIP/PFR-based range modifiers
-        range_width_mult, aggression_mult = self.tracker.get_range_modifiers(opp_id)
-        active_range = self.range_matrix.get_active_combos(opp_id)
+        if opp_id is None:
+            print(f'[DECISION] no opponent profile yet — using default range')
+            # Use full default range so equity can still be estimated
+            active_range = list(self.range_matrix.get_active_combos('default') or [])
+            opp_profile = {'vpip': 50.0, 'pfr': 25.0, 'af': 1.0}
+            range_width_mult, aggression_mult = 1.0, 1.0
+        else:
+            active_range = list(self.range_matrix.get_active_combos(opp_id))
+            opp_profile = self.tracker.get_player_profile(opp_id)
+            range_width_mult, aggression_mult = self.tracker.get_range_modifiers(opp_id)
 
         # Phase 4: is hero acting last?
         with self.ocr_lock:
