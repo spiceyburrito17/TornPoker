@@ -1,5 +1,3 @@
-HERO_WINS_RE = re.compile(r'(?:Hero|you)\s+wins?\s+\$?([0-9,]+(?:\.[0-9]{1,2})?)', re.IGNORECASE)
-HERO_LOSES_RE = re.compile(r'(?:Hero|you)\s+(?:loses?|mucks?|folds?)\b', re.IGNORECASE)
 import json
 import math
 import re
@@ -19,6 +17,9 @@ from monte_carlo import MonteCarloSolver
 from range_matrix import RangeMatrix
 from session_logger import SessionLogger
 from tracker import TableTracker
+
+HERO_WINS_RE = re.compile(r'(?:Hero|you)\s+wins?\s+\$?([0-9,]+(?:\.[0-9]{1,2})?)', re.IGNORECASE)
+HERO_LOSES_RE = re.compile(r'(?:Hero|you)\s+(?:loses?|mucks?|folds?)\b', re.IGNORECASE)
 
 class Street(Enum):
     PREFLOP = auto()
@@ -752,6 +753,8 @@ class OverlayEngine:
             lines.append(f'Call: ${amount_to_call:.2f}')
 
         opp_id = self.tracker.get_primary_opponent()
+        equity = 0.0
+        pot_odds_pct = 0.0
         if hero_cards and board is not None and opp_id:
             vpip = self.tracker.get_vpip_rate(opp_id)
             pfr  = self.tracker.get_pfr_rate(opp_id)
