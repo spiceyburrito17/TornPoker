@@ -755,6 +755,8 @@ class OverlayEngine:
         opp_id = self.tracker.get_primary_opponent()
         equity = 0.0
         pot_odds_pct = 0.0
+        active_range = []
+
         if hero_cards and board is not None and opp_id:
             vpip = self.tracker.get_vpip_rate(opp_id)
             pfr  = self.tracker.get_pfr_rate(opp_id)
@@ -765,34 +767,30 @@ class OverlayEngine:
                 f'VPIP={vpip:.0f}% PFR={pfr:.0f}% '
                 f'RangeMult={rw_mult:.2f} AggMult={ag_mult:.2f}'
             )
-
             active_range = self.range_matrix.get_active_combos(opp_id)
             equity = self.solver.estimate_equity(hero_cards, board, active_range, trials=1000)
-        pot_odds_pct = amount_to_call / (pot_size + amount_to_call) * 100.0 if (pot_size + amount_to_call) > 0 else 0.0
-        if abs(equity - pot_odds_pct) < 5.0:
-            equity = self.solver.estimate_equity(hero_cards, board, active_range, trials=5000)
 
-            equity_text    = f'{equity:.1f}%'
-            pot_odds_text  = 'N/A'
-            mdf_text       = 'N/A'
-            if amount_to_call is not None and pot_size is not None and pot_size >= 0:
-                total = pot_size + amount_to_call
-                if total > 0:
-                    pot_odds = amount_to_call / total * 100.0
-                    pot_odds_text = f'{pot_odds:.1f}%'
-                if amount_to_call > 0:
-                    mdf = calculate_mdf(amount_to_call, pot_size)
-                    mdf_text = f'{mdf * 100:.1f}%'
+        if pot_size is not None and amount_to_call is not None:
+            total = pot_size + amount_to_call
+            pot_odds_pct = (amount_to_call / total * 100.0) if total > 0 else 0.0
+            if hero_cards and board and active_range and abs(equity - pot_odds_pct) < 5.0:
+                equity = self.solver.estimate_equity(hero_cards, board, active_range, trials=5000)
 
-            # Phase 4: position
-            with self.ocr_lock:
-                active_seats = getattr(self, '_last_active_seats', [0])
-                dealer_seat  = getattr(self, '_last_dealer_seat', None)
-            ip_label = 'IP' if self.tracker.is_hero_in_position(active_seats, dealer_seat) else 'OOP'
-            lines.append(
-                f'Equity: {equity_text} | PotOdds: {pot_odds_text} '
-                f'| MDF: {mdf_text} | Pos: {ip_label}'
-            )
+        equity_text   = f'{equity:.1f}%'
+        pot_odds_text = f'{pot_odds_pct:.1f}%' if pot_odds_pct else 'N/A'
+        mdf_text      = 'N/A'
+        if amount_to_call is not None and amount_to_call > 0 and pot_size is not None:
+            mdf = calculate_mdf(amount_to_call, pot_size)
+            mdf_text = f'{mdf * 100:.1f}%'
+
+        with self.ocr_lock:
+            active_seats = getattr(self, '_last_active_seats', [0])
+            dealer_seat  = getattr(self, '_last_dealer_seat', None)
+        ip_label = 'IP' if self.tracker.is_hero_in_position(active_seats, dealer_seat) else 'OOP'
+        lines.append(
+            f'Equity: {equity_text} | PotOdds: {pot_odds_text} '
+            f'| MDF: {mdf_text} | Pos: {ip_label}'
+        )
 
         bb_100 = self.session_logger.get_bb_per_100()
         hands_count = len(self.session_logger._hands)
