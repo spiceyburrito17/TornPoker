@@ -1,5 +1,6 @@
 import json
 import os
+import random
 from dataclasses import dataclass
 from typing import Iterable, List, Optional
 
@@ -140,11 +141,13 @@ class DecisionMaker:
         raise_threshold: float = 5.0,
         wide_range_cutoff: float = 0.55,
         pfr_chart_path: str = 'pfr_chart.json',
+        postflop_tree_path: str = 'postflop_tree.json',
     ):
         self.call_threshold    = call_threshold
         self.raise_threshold   = raise_threshold
         self.wide_range_cutoff = wide_range_cutoff
         self.pfr_chart         = self._load_pfr_chart(pfr_chart_path)
+        self.postflop_tree     = self._load_postflop_tree(postflop_tree_path)
 
     # ------------------------------------------------------------------
     # EV
@@ -262,7 +265,7 @@ class DecisionMaker:
         return action
 
     # ------------------------------------------------------------------
-    # Core postflop decision (Phases 1-4 integrated)
+    # Core postflop decision — frequency-based strategy tree
     # ------------------------------------------------------------------
     def choose_action(
         self,
@@ -277,79 +280,79 @@ class DecisionMaker:
         range_width_mult: float = 1.0,
         aggression_mult: float = 1.0,
         hero_equity_rank: float = 0.5,
+        hero_position: str = 'BTN',
+        vs_position: str = 'BB',
     ) -> str:
-        """
-        Unified postflop decision integrating all four phases.
-
-        Parameters
-        ----------
-        equity_pct        : Monte Carlo equity (0-100)
-        pot_size          : current pot
-        amount_to_call    : hero's cost to continue
-        bankroll          : hero stack
-        active_range      : opponent combo list (pre-profile adjustment)
-        current_street    : Street enum (optional)
-        board             : board cards for texture analysis (Phase 2)
-        hero_is_ip        : True if hero acts last (Phase 4)
-        range_width_mult  : from PlayerTracker.get_range_modifiers() (Phase 1)
-        aggression_mult   : from PlayerTracker.get_range_modifiers() (Phase 1)
-        hero_equity_rank  : 0=top of range, 1=bottom (Phase 3 MDF)
-        """
         if amount_to_call is None or pot_size is None:
             return 'Fold'
         if amount_to_call > bankroll:
             return 'Fold'
 
-        # Phase 1: adjust range based on opponent profile
-        adjusted_range = self.adjust_range_for_profile(active_range, range_width_mult)
-
-        # Phase 2: board texture
         texture = analyze_board_texture(board or [])
+        texture_label = texture['texture_label']
 
-        # Phase 3: MDF bluff-catching
-        mdf = calculate_mdf(amount_to_call, pot_size) if amount_to_call > 0 else 0.67
-        pot_odds_pct = (
-            amount_to_call / (pot_size + amount_to_call) * 100.0
-            if (pot_size + amount_to_call) > 0 else 0.0
+        street_name = 'FLOP'
+        if current_street is not None:
+            street_name = current_street.name if hasattr(current_street, 'name') else str(current_street)
+
+        range_adv = self._classify_range_advantage(equity_pct, hero_is_ip)
+
+        matchup_key = f"{hero_position}_vs_{vs_position}"
+        tree_node = (
+            self.postflop_tree.get(matchup_key)
+            or self.postflop_tree.get('default', {})
         )
-        catching_bluff = is_bluff_catcher(
-            equity_pct, pot_odds_pct, mdf, hero_equity_rank
-        )
+        street_node   = tree_node.get(street_name, tree_node.get('FLOP', {}))
+        texture_node  = street_node.get(texture_label, street_node.get('DRY', {}))
+        freq_map      = texture_node.get(range_adv, {})
 
-        potential_pot = max(0.0, pot_size + amount_to_call)
-        cost          = max(0.0, amount_to_call)
-        spr           = bankroll / pot_size if pot_size > 0 else 0.0
-        ev            = self.calculate_ev(equity_pct, potential_pot, cost)
+        if not freq_map:
+            freq_map = {'check': 0.5, 'fold': 0.5} if amount_to_call > 0 else {'check': 1.0}
 
-        # Apply aggression multiplier to raise threshold
-        effective_raise_threshold = self.raise_threshold / max(0.1, aggression_mult)
+        raw_action = self._sample_action(freq_map)
+        return self._map_tree_action(raw_action, pot_size, amount_to_call, bankroll)
 
-        # --- Decision tree ---
-        if ev < 0:
-            # Phase 3: even with negative EV we must sometimes defend as bluff catcher
-            if catching_bluff and amount_to_call <= pot_size:
-                action = 'Call'
-            else:
-                return 'Fold'
-        elif ev < self.call_threshold:
-            action = 'Check' if cost == 0.0 else 'Call'
-        elif ev >= effective_raise_threshold and self.is_range_wide(adjusted_range):
-            # Phase 2: texture-driven sizing
-            wet = texture['texture_label']
-            if spr <= 0.4:
-                action = 'Raise_AllIn'
-            elif wet == 'WET':
-                action = 'Raise_Pot'    # charge draws hard
-            elif wet == 'DRY':
-                action = 'Raise_Half'   # value bet, keep them in
-            else:
-                action = 'Raise_Pot' if spr <= 6.0 else 'Raise_Half'
-        else:
-            action = 'Check' if cost == 0.0 else 'Call'
+    @staticmethod
+    def _classify_range_advantage(equity_pct: float, hero_is_ip: bool) -> str:
+        prefix = 'IP' if hero_is_ip else 'OOP'
+        if equity_pct >= 58:
+            return f'{prefix}_AHEAD'
+        if equity_pct <= 42:
+            return f'{prefix}_BEHIND'
+        return f'{prefix}_EVEN'
 
-        # Phase 4: positional modifier refines the sizing
-        action = self._apply_positional_modifier(action, hero_is_ip, texture)
+    @staticmethod
+    def _sample_action(freq_map: dict) -> str:
+        actions = list(freq_map.keys())
+        weights = [freq_map[a] for a in actions]
+        total   = sum(weights)
+        if total <= 0:
+            return actions[0] if actions else 'check'
+        r = random.random() * total
+        cumulative = 0.0
+        for action, weight in zip(actions, weights):
+            cumulative += weight
+            if r <= cumulative:
+                return action
+        return actions[-1]
 
+    @staticmethod
+    def _map_tree_action(raw: str, pot_size: float, amount_to_call: float, bankroll: float) -> str:
+        spr = bankroll / pot_size if pot_size > 0 else 99.0
+        mapping = {
+            'check': 'Check',
+            'call':  'Call',
+            'fold':  'Fold',
+            'bet_33':  'Raise_Half',
+            'bet_50':  'Raise_Half',
+            'bet_75':  'Raise_Pot',
+            'bet_pot': 'Raise_Pot',
+        }
+        action = mapping.get(raw, 'Check')
+        if action in ('Raise_Half', 'Raise_Pot') and spr <= 0.4:
+            action = 'Raise_AllIn'
+        if amount_to_call > 0 and action == 'Check':
+            action = 'Call'
         return action
 
     # ------------------------------------------------------------------
@@ -378,7 +381,9 @@ class DecisionMaker:
         combo    = self._cards_to_combo(hero_cards)
         pos      = (context.position or 'BTN').upper()
         act_type = (context.hero_action_type or 'unopened').lower()
-        chart    = self.pfr_chart.get('cash_100bb', {})
+
+        depth_key = self._stack_depth_key(context.effective_stack_bb)
+        chart = self.pfr_chart.get(depth_key) or self.pfr_chart.get('cash_100bb', {})
         pos_ranges = chart.get(pos, {})
 
         if act_type == 'unopened':
@@ -405,6 +410,16 @@ class DecisionMaker:
 
         return 'Fold'
 
+    @staticmethod
+    def _stack_depth_key(effective_stack_bb: float) -> str:
+        if effective_stack_bb <= 50:
+            return 'cash_40bb'
+        if effective_stack_bb <= 80:
+            return 'cash_60bb'
+        if effective_stack_bb <= 150:
+            return 'cash_100bb'
+        return 'cash_200bb'
+
     def _load_pfr_chart(self, path: str) -> dict:
         if os.path.exists(path):
             try:
@@ -423,3 +438,12 @@ class DecisionMaker:
                 },
             }
         }
+
+    def _load_postflop_tree(self, path: str) -> dict:
+        if os.path.exists(path):
+            try:
+                with open(path, 'r', encoding='utf-8') as fh:
+                    return json.load(fh)
+            except Exception:
+                pass
+        return {'default': {'FLOP': {'DRY': {'IP_AHEAD': {'bet_33': 0.5, 'check': 0.5}}}}}

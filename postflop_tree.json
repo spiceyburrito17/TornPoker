@@ -1,0 +1,300 @@
+{
+  "_comment": "Postflop strategy tree. Keys: matchup -> street -> texture -> range_adv -> strategy frequencies. Frequencies sum to 1.0. Actions: bet_33, bet_50, bet_75, bet_pot, check, call, fold.",
+
+  "BTN_vs_BB": {
+    "FLOP": {
+      "DRY": {
+        "IP_AHEAD":    {"bet_33": 0.60, "bet_75": 0.10, "check": 0.30},
+        "IP_EVEN":     {"bet_33": 0.35, "bet_75": 0.05, "check": 0.60},
+        "IP_BEHIND":   {"bet_33": 0.15, "check": 0.60, "fold": 0.25}
+      },
+      "SEMI_WET": {
+        "IP_AHEAD":    {"bet_33": 0.30, "bet_75": 0.40, "check": 0.30},
+        "IP_EVEN":     {"bet_33": 0.20, "bet_75": 0.25, "check": 0.55},
+        "IP_BEHIND":   {"bet_33": 0.10, "check": 0.55, "fold": 0.35}
+      },
+      "WET": {
+        "IP_AHEAD":    {"bet_75": 0.55, "bet_pot": 0.10, "check": 0.35},
+        "IP_EVEN":     {"bet_75": 0.30, "check": 0.50, "fold": 0.20},
+        "IP_BEHIND":   {"check": 0.55, "fold": 0.45}
+      }
+    },
+    "TURN": {
+      "DRY": {
+        "IP_AHEAD":    {"bet_50": 0.55, "bet_75": 0.15, "check": 0.30},
+        "IP_EVEN":     {"bet_50": 0.30, "check": 0.55, "fold": 0.15},
+        "IP_BEHIND":   {"check": 0.50, "fold": 0.50}
+      },
+      "SEMI_WET": {
+        "IP_AHEAD":    {"bet_50": 0.35, "bet_75": 0.30, "check": 0.35},
+        "IP_EVEN":     {"bet_50": 0.20, "bet_75": 0.15, "check": 0.50, "fold": 0.15},
+        "IP_BEHIND":   {"check": 0.45, "fold": 0.55}
+      },
+      "WET": {
+        "IP_AHEAD":    {"bet_75": 0.50, "bet_pot": 0.15, "check": 0.35},
+        "IP_EVEN":     {"bet_75": 0.25, "check": 0.45, "fold": 0.30},
+        "IP_BEHIND":   {"check": 0.35, "fold": 0.65}
+      }
+    },
+    "RIVER": {
+      "DRY": {
+        "IP_AHEAD":    {"bet_50": 0.60, "bet_pot": 0.15, "check": 0.25},
+        "IP_EVEN":     {"bet_50": 0.30, "check": 0.50, "fold": 0.20},
+        "IP_BEHIND":   {"check": 0.40, "fold": 0.60}
+      },
+      "SEMI_WET": {
+        "IP_AHEAD":    {"bet_50": 0.45, "bet_75": 0.25, "check": 0.30},
+        "IP_EVEN":     {"bet_50": 0.20, "check": 0.50, "fold": 0.30},
+        "IP_BEHIND":   {"check": 0.30, "fold": 0.70}
+      },
+      "WET": {
+        "IP_AHEAD":    {"bet_75": 0.55, "bet_pot": 0.15, "check": 0.30},
+        "IP_EVEN":     {"bet_75": 0.20, "check": 0.40, "fold": 0.40},
+        "IP_BEHIND":   {"check": 0.25, "fold": 0.75}
+      }
+    }
+  },
+
+  "CO_vs_BB": {
+    "FLOP": {
+      "DRY": {
+        "IP_AHEAD":    {"bet_33": 0.55, "bet_75": 0.10, "check": 0.35},
+        "IP_EVEN":     {"bet_33": 0.30, "check": 0.60, "fold": 0.10},
+        "IP_BEHIND":   {"bet_33": 0.10, "check": 0.60, "fold": 0.30}
+      },
+      "SEMI_WET": {
+        "IP_AHEAD":    {"bet_33": 0.25, "bet_75": 0.40, "check": 0.35},
+        "IP_EVEN":     {"bet_33": 0.15, "bet_75": 0.20, "check": 0.55, "fold": 0.10},
+        "IP_BEHIND":   {"check": 0.55, "fold": 0.45}
+      },
+      "WET": {
+        "IP_AHEAD":    {"bet_75": 0.50, "bet_pot": 0.15, "check": 0.35},
+        "IP_EVEN":     {"bet_75": 0.25, "check": 0.50, "fold": 0.25},
+        "IP_BEHIND":   {"check": 0.50, "fold": 0.50}
+      }
+    },
+    "TURN": {
+      "DRY": {
+        "IP_AHEAD":    {"bet_50": 0.50, "bet_75": 0.15, "check": 0.35},
+        "IP_EVEN":     {"bet_50": 0.25, "check": 0.55, "fold": 0.20},
+        "IP_BEHIND":   {"check": 0.45, "fold": 0.55}
+      },
+      "SEMI_WET": {
+        "IP_AHEAD":    {"bet_50": 0.30, "bet_75": 0.30, "check": 0.40},
+        "IP_EVEN":     {"bet_50": 0.15, "check": 0.55, "fold": 0.30},
+        "IP_BEHIND":   {"check": 0.40, "fold": 0.60}
+      },
+      "WET": {
+        "IP_AHEAD":    {"bet_75": 0.45, "bet_pot": 0.15, "check": 0.40},
+        "IP_EVEN":     {"bet_75": 0.20, "check": 0.45, "fold": 0.35},
+        "IP_BEHIND":   {"check": 0.30, "fold": 0.70}
+      }
+    },
+    "RIVER": {
+      "DRY": {
+        "IP_AHEAD":    {"bet_50": 0.55, "bet_pot": 0.15, "check": 0.30},
+        "IP_EVEN":     {"bet_50": 0.25, "check": 0.50, "fold": 0.25},
+        "IP_BEHIND":   {"check": 0.35, "fold": 0.65}
+      },
+      "SEMI_WET": {
+        "IP_AHEAD":    {"bet_50": 0.40, "bet_75": 0.25, "check": 0.35},
+        "IP_EVEN":     {"bet_50": 0.15, "check": 0.50, "fold": 0.35},
+        "IP_BEHIND":   {"check": 0.25, "fold": 0.75}
+      },
+      "WET": {
+        "IP_AHEAD":    {"bet_75": 0.50, "bet_pot": 0.15, "check": 0.35},
+        "IP_EVEN":     {"bet_75": 0.15, "check": 0.45, "fold": 0.40},
+        "IP_BEHIND":   {"check": 0.20, "fold": 0.80}
+      }
+    }
+  },
+
+  "BB_vs_BTN": {
+    "FLOP": {
+      "DRY": {
+        "OOP_AHEAD":   {"bet_33": 0.35, "bet_75": 0.10, "check": 0.55},
+        "OOP_EVEN":    {"check": 0.70, "fold": 0.30},
+        "OOP_BEHIND":  {"check": 0.55, "fold": 0.45}
+      },
+      "SEMI_WET": {
+        "OOP_AHEAD":   {"bet_33": 0.20, "bet_75": 0.25, "check": 0.55},
+        "OOP_EVEN":    {"check": 0.65, "fold": 0.35},
+        "OOP_BEHIND":  {"check": 0.50, "fold": 0.50}
+      },
+      "WET": {
+        "OOP_AHEAD":   {"bet_75": 0.30, "check": 0.70},
+        "OOP_EVEN":    {"check": 0.60, "fold": 0.40},
+        "OOP_BEHIND":  {"check": 0.45, "fold": 0.55}
+      }
+    },
+    "TURN": {
+      "DRY": {
+        "OOP_AHEAD":   {"bet_50": 0.35, "check": 0.65},
+        "OOP_EVEN":    {"check": 0.60, "fold": 0.40},
+        "OOP_BEHIND":  {"check": 0.45, "fold": 0.55}
+      },
+      "SEMI_WET": {
+        "OOP_AHEAD":   {"bet_50": 0.25, "bet_75": 0.15, "check": 0.60},
+        "OOP_EVEN":    {"check": 0.55, "fold": 0.45},
+        "OOP_BEHIND":  {"check": 0.35, "fold": 0.65}
+      },
+      "WET": {
+        "OOP_AHEAD":   {"bet_75": 0.25, "check": 0.75},
+        "OOP_EVEN":    {"check": 0.50, "fold": 0.50},
+        "OOP_BEHIND":  {"check": 0.30, "fold": 0.70}
+      }
+    },
+    "RIVER": {
+      "DRY": {
+        "OOP_AHEAD":   {"bet_50": 0.40, "bet_75": 0.15, "check": 0.45},
+        "OOP_EVEN":    {"check": 0.55, "fold": 0.45},
+        "OOP_BEHIND":  {"check": 0.35, "fold": 0.65}
+      },
+      "SEMI_WET": {
+        "OOP_AHEAD":   {"bet_50": 0.30, "bet_75": 0.15, "check": 0.55},
+        "OOP_EVEN":    {"check": 0.50, "fold": 0.50},
+        "OOP_BEHIND":  {"check": 0.25, "fold": 0.75}
+      },
+      "WET": {
+        "OOP_AHEAD":   {"bet_75": 0.30, "bet_pot": 0.10, "check": 0.60},
+        "OOP_EVEN":    {"check": 0.45, "fold": 0.55},
+        "OOP_BEHIND":  {"check": 0.20, "fold": 0.80}
+      }
+    }
+  },
+
+  "SB_vs_BB": {
+    "FLOP": {
+      "DRY": {
+        "OOP_AHEAD":   {"bet_33": 0.40, "bet_75": 0.10, "check": 0.50},
+        "OOP_EVEN":    {"bet_33": 0.15, "check": 0.65, "fold": 0.20},
+        "OOP_BEHIND":  {"check": 0.55, "fold": 0.45}
+      },
+      "SEMI_WET": {
+        "OOP_AHEAD":   {"bet_33": 0.25, "bet_75": 0.25, "check": 0.50},
+        "OOP_EVEN":    {"check": 0.65, "fold": 0.35},
+        "OOP_BEHIND":  {"check": 0.50, "fold": 0.50}
+      },
+      "WET": {
+        "OOP_AHEAD":   {"bet_75": 0.35, "check": 0.65},
+        "OOP_EVEN":    {"check": 0.60, "fold": 0.40},
+        "OOP_BEHIND":  {"check": 0.45, "fold": 0.55}
+      }
+    },
+    "TURN": {
+      "DRY": {
+        "OOP_AHEAD":   {"bet_50": 0.40, "check": 0.60},
+        "OOP_EVEN":    {"check": 0.60, "fold": 0.40},
+        "OOP_BEHIND":  {"check": 0.40, "fold": 0.60}
+      },
+      "SEMI_WET": {
+        "OOP_AHEAD":   {"bet_50": 0.30, "bet_75": 0.15, "check": 0.55},
+        "OOP_EVEN":    {"check": 0.55, "fold": 0.45},
+        "OOP_BEHIND":  {"check": 0.35, "fold": 0.65}
+      },
+      "WET": {
+        "OOP_AHEAD":   {"bet_75": 0.30, "check": 0.70},
+        "OOP_EVEN":    {"check": 0.50, "fold": 0.50},
+        "OOP_BEHIND":  {"check": 0.25, "fold": 0.75}
+      }
+    },
+    "RIVER": {
+      "DRY": {
+        "OOP_AHEAD":   {"bet_50": 0.45, "bet_75": 0.10, "check": 0.45},
+        "OOP_EVEN":    {"check": 0.55, "fold": 0.45},
+        "OOP_BEHIND":  {"check": 0.30, "fold": 0.70}
+      },
+      "SEMI_WET": {
+        "OOP_AHEAD":   {"bet_50": 0.30, "bet_75": 0.15, "check": 0.55},
+        "OOP_EVEN":    {"check": 0.45, "fold": 0.55},
+        "OOP_BEHIND":  {"check": 0.20, "fold": 0.80}
+      },
+      "WET": {
+        "OOP_AHEAD":   {"bet_75": 0.30, "check": 0.70},
+        "OOP_EVEN":    {"check": 0.40, "fold": 0.60},
+        "OOP_BEHIND":  {"check": 0.15, "fold": 0.85}
+      }
+    }
+  },
+
+  "default": {
+    "FLOP": {
+      "DRY": {
+        "IP_AHEAD":    {"bet_33": 0.50, "check": 0.50},
+        "IP_EVEN":     {"bet_33": 0.25, "check": 0.60, "fold": 0.15},
+        "IP_BEHIND":   {"check": 0.55, "fold": 0.45},
+        "OOP_AHEAD":   {"bet_33": 0.30, "check": 0.70},
+        "OOP_EVEN":    {"check": 0.65, "fold": 0.35},
+        "OOP_BEHIND":  {"check": 0.50, "fold": 0.50}
+      },
+      "SEMI_WET": {
+        "IP_AHEAD":    {"bet_33": 0.25, "bet_75": 0.35, "check": 0.40},
+        "IP_EVEN":     {"bet_33": 0.15, "check": 0.60, "fold": 0.25},
+        "IP_BEHIND":   {"check": 0.55, "fold": 0.45},
+        "OOP_AHEAD":   {"bet_33": 0.20, "bet_75": 0.15, "check": 0.65},
+        "OOP_EVEN":    {"check": 0.60, "fold": 0.40},
+        "OOP_BEHIND":  {"check": 0.45, "fold": 0.55}
+      },
+      "WET": {
+        "IP_AHEAD":    {"bet_75": 0.50, "check": 0.50},
+        "IP_EVEN":     {"bet_75": 0.20, "check": 0.50, "fold": 0.30},
+        "IP_BEHIND":   {"check": 0.45, "fold": 0.55},
+        "OOP_AHEAD":   {"bet_75": 0.25, "check": 0.75},
+        "OOP_EVEN":    {"check": 0.55, "fold": 0.45},
+        "OOP_BEHIND":  {"check": 0.40, "fold": 0.60}
+      }
+    },
+    "TURN": {
+      "DRY": {
+        "IP_AHEAD":    {"bet_50": 0.50, "check": 0.50},
+        "IP_EVEN":     {"bet_50": 0.20, "check": 0.60, "fold": 0.20},
+        "IP_BEHIND":   {"check": 0.45, "fold": 0.55},
+        "OOP_AHEAD":   {"bet_50": 0.30, "check": 0.70},
+        "OOP_EVEN":    {"check": 0.55, "fold": 0.45},
+        "OOP_BEHIND":  {"check": 0.35, "fold": 0.65}
+      },
+      "SEMI_WET": {
+        "IP_AHEAD":    {"bet_50": 0.30, "bet_75": 0.25, "check": 0.45},
+        "IP_EVEN":     {"bet_50": 0.15, "check": 0.55, "fold": 0.30},
+        "IP_BEHIND":   {"check": 0.40, "fold": 0.60},
+        "OOP_AHEAD":   {"bet_50": 0.20, "check": 0.80},
+        "OOP_EVEN":    {"check": 0.50, "fold": 0.50},
+        "OOP_BEHIND":  {"check": 0.30, "fold": 0.70}
+      },
+      "WET": {
+        "IP_AHEAD":    {"bet_75": 0.45, "check": 0.55},
+        "IP_EVEN":     {"bet_75": 0.15, "check": 0.50, "fold": 0.35},
+        "IP_BEHIND":   {"check": 0.35, "fold": 0.65},
+        "OOP_AHEAD":   {"bet_75": 0.20, "check": 0.80},
+        "OOP_EVEN":    {"check": 0.45, "fold": 0.55},
+        "OOP_BEHIND":  {"check": 0.25, "fold": 0.75}
+      }
+    },
+    "RIVER": {
+      "DRY": {
+        "IP_AHEAD":    {"bet_50": 0.55, "check": 0.45},
+        "IP_EVEN":     {"bet_50": 0.20, "check": 0.50, "fold": 0.30},
+        "IP_BEHIND":   {"check": 0.35, "fold": 0.65},
+        "OOP_AHEAD":   {"bet_50": 0.35, "check": 0.65},
+        "OOP_EVEN":    {"check": 0.50, "fold": 0.50},
+        "OOP_BEHIND":  {"check": 0.25, "fold": 0.75}
+      },
+      "SEMI_WET": {
+        "IP_AHEAD":    {"bet_50": 0.40, "bet_75": 0.20, "check": 0.40},
+        "IP_EVEN":     {"bet_50": 0.15, "check": 0.50, "fold": 0.35},
+        "IP_BEHIND":   {"check": 0.25, "fold": 0.75},
+        "OOP_AHEAD":   {"bet_50": 0.25, "check": 0.75},
+        "OOP_EVEN":    {"check": 0.45, "fold": 0.55},
+        "OOP_BEHIND":  {"check": 0.20, "fold": 0.80}
+      },
+      "WET": {
+        "IP_AHEAD":    {"bet_75": 0.50, "check": 0.50},
+        "IP_EVEN":     {"bet_75": 0.15, "check": 0.45, "fold": 0.40},
+        "IP_BEHIND":   {"check": 0.20, "fold": 0.80},
+        "OOP_AHEAD":   {"bet_75": 0.25, "check": 0.75},
+        "OOP_EVEN":    {"check": 0.40, "fold": 0.60},
+        "OOP_BEHIND":  {"check": 0.15, "fold": 0.85}
+      }
+    }
+  }
+}

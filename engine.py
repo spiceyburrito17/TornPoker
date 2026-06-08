@@ -15,6 +15,7 @@ from decision_maker import DecisionMaker, PreflopContext
 from ghost import GhostArm
 from monte_carlo import MonteCarloSolver
 from range_matrix import RangeMatrix
+from session_logger import SessionLogger
 from tracker import TableTracker
 
 class Street(Enum):
@@ -81,7 +82,7 @@ class OverlayEngine:
         self.capture_region = {'top': 150, 'left': -1600, 'width': 1280, 'height': 850}
         self.hero_cards_region = {'top': 450, 'left': 605, 'width': 147, 'height': 105}
         self.board_cards_region = {'top': 220, 'left': 450, 'width': 395, 'height': 105}
-        self.stack_region = {'top': 380, 'left': 850, 'width': 100, 'height': 40} # Adjust these later to fit over your money
+        self.stack_region = {'top': 577, 'left': 575, 'width': 140, 'height': 35} # Adjust these later to fit over your money
         self.decision_maker = DecisionMaker()
         self.button_coords = {}
         self.last_known = {
@@ -105,6 +106,10 @@ class OverlayEngine:
         self.locked_stack = None
         self.log_memory = ''
         self.frame_index = 0
+        self._last_range_game_id = None
+        self._last_range_street = None
+        self.session_logger = SessionLogger()
+        self._logger_game_id = None
         self.running = True
         self.ocr_lock = threading.Lock()
         self.latest_frame_data = {}
@@ -182,11 +187,11 @@ class OverlayEngine:
                 button_coords = {}
                 text_lines = []
                 # Prepare a display copy for debug overlay (draw boxes and centers)
+                visual_stack = None
                 try:
                     disp = cv2.cvtColor(frame.copy(), cv2.COLOR_RGB2BGR)
                 except Exception:
                     disp = frame.copy()
-                    visual_stack = None
                 for result in text_results:
                     bbox, detected_text, _confidence = result
                     normalized_text = detected_text.strip().lower()
@@ -206,7 +211,12 @@ class OverlayEngine:
                         sw = self.stack_region['width']
                         sh = self.stack_region['height']
                         if sx <= center_x <= sx + sw and sy <= center_y <= sy + sh:
-                            cleaned = re.sub(r'[^0-9.]', '', detected_text)
+                            cleaned = re.sub(r'[^0-9.,]', '', detected_text)
+                            if cleaned.startswith('5') and ',' in cleaned:
+                                candidate = cleaned[1:]
+                                if re.match(r'^\d{1,3}(,\d{3})*$', candidate):
+                                    cleaned = candidate
+                            cleaned = cleaned.replace(',', '')
                             if cleaned:
                                 visual_stack = cleaned
                     # -------------------------------
@@ -226,6 +236,11 @@ class OverlayEngine:
                     # Primary action buttons
                     if normalized_text in {'fold', 'call', 'raise', 'check'} and is_bottom_button:
                         button_coords[normalized_text] = (monitor_x, monitor_y)
+
+                    # Extract call amount from the call button label (e.g. "Call $250" or "CALL 250")
+                    call_label_match = re.match(r'^call\s+\$?([\d,]+(?:\.\d{1,2})?)', normalized_text)
+                    if call_label_match and is_bottom_button:
+                        button_coords['call_amount_raw'] = call_label_match.group(1)
 
                     # Bet sizing labels commonly displayed on poker clients
                     sizing_map = {
@@ -292,6 +307,11 @@ class OverlayEngine:
                     parsed['hero_cards'] = hero_cards
                 if board_cards:
                     parsed['board'] = board_cards
+                call_amount_raw = button_coords.pop('call_amount_raw', None)
+                if call_amount_raw is not None:
+                    button_call_amount = self._clean_currency_value(call_amount_raw)
+                    if button_call_amount is not None:
+                        parsed['amount_to_call'] = button_call_amount
 
                 req_equity = 0.0
                 hero_equity = None
@@ -545,6 +565,10 @@ class OverlayEngine:
             return None
         cleaned = raw_value.strip()
         cleaned = cleaned.replace('$', '')
+        if cleaned.startswith('5') and ',' in cleaned:
+            candidate = cleaned[1:]
+            if re.match(r'^\d{1,3}(,\d{3})*(\.\d{1,2})?$', candidate):
+                cleaned = candidate
         cleaned = cleaned.replace(',', '')
         cleaned = re.sub(r'[^0-9.]', '', cleaned)
         if cleaned.count('.') > 1:
@@ -617,7 +641,9 @@ class OverlayEngine:
                 self._apply_sticky_vision(frame_data)
                 self._apply_bankroll_lock(frame_data)
                 self._apply_log_bleed_protection(frame_data)
+                self.current_street = self._determine_current_street(self.last_known['board'])
                 self.tracker.parse_action_log(frame_data.get('log', ''))
+                self._update_range_matrix(frame_data.get('log', ''), frame_data.get('game_id'))
                 if frame_data.get('stack') is not None:
                     self.last_known['stack'] = frame_data['stack']
 
@@ -628,8 +654,11 @@ class OverlayEngine:
             amount_to_call = self.last_known.get('amount_to_call')
 
             # Only act when the detected state has been stable for REQUIRED_STABLE_FRAMES
-            if frame_data and frame_data.get('hero_turn') and self.stable_frames >= self.REQUIRED_STABLE_FRAMES:
-                self._try_make_decision(hero_cards, board, stack, pot_size, amount_to_call)
+            if frame_data and self.stable_frames >= self.REQUIRED_STABLE_FRAMES:
+                hero_turn = frame_data.get('hero_turn', False)
+                print(f"[TRIGGER] stable_frames={self.stable_frames} hero_turn={hero_turn} street={self.current_street.name} hero_cards={hero_cards}")
+                if hero_turn:
+                    self._try_make_decision(hero_cards, board, stack, pot_size, amount_to_call)
                 # Reset after taking action to avoid duplicate execution
                 self.stable_frames = 0
                 self._stable_snapshot = None
@@ -707,7 +736,10 @@ class OverlayEngine:
             )
 
             active_range = self.range_matrix.get_active_combos(opp_id)
-            equity = self.solver.estimate_equity(hero_cards, board, active_range)
+            equity = self.solver.estimate_equity(hero_cards, board, active_range, trials=1000)
+        pot_odds_pct = amount_to_call / (pot_size + amount_to_call) * 100.0 if (pot_size + amount_to_call) > 0 else 0.0
+        if abs(equity - pot_odds_pct) < 5.0:
+            equity = self.solver.estimate_equity(hero_cards, board, active_range, trials=5000)
 
             equity_text    = f'{equity:.1f}%'
             pot_odds_text  = 'N/A'
@@ -733,9 +765,67 @@ class OverlayEngine:
 
         return '\n'.join(lines)
 
+    def _update_range_matrix(self, log: str, game_id) -> None:
+        opp_id = self.tracker.get_primary_opponent()
+        if not opp_id:
+            return
+
+        new_game = game_id and game_id != self._last_range_game_id
+        new_street = self.current_street != self._last_range_street
+
+        if new_game:
+            self.range_matrix.remove_opponent(opp_id)
+            self.range_matrix.add_opponent(opp_id)
+            self._last_range_game_id = game_id
+            self._last_range_street = None
+
+        if new_street and self._last_range_street is not None:
+            board = self.last_known.get('board', [])
+            if board:
+                self.range_matrix.prune_by_board(opp_id, board)
+        self._last_range_street = self.current_street
+
+        if not log:
+            return
+
+        pfr = self.tracker.get_pfr_rate(opp_id)
+        for line in log.splitlines():
+            line = line.strip()
+            if not line:
+                continue
+            name_match = re.match(r'^([A-Za-z0-9_]+)\s+(raises|calls|folds|checks|bets|limps)', line, re.IGNORECASE)
+            if not name_match:
+                continue
+            player = name_match.group(1)
+            action = name_match.group(2).lower()
+            if player.lower() == opp_id.lower():
+                self.range_matrix.update_range_from_action(opp_id, action, pfr)
+
     def _try_make_decision(self, hero_cards, board, stack, pot_size, amount_to_call) -> None:
         self.current_recommendation = 'WAIT'
         if not hero_cards:
+            return
+
+        game_id = self.last_known.get('game_id')
+        if game_id != self._logger_game_id:
+            self.session_logger.start_hand(game_id)
+            self._logger_game_id = game_id
+
+        amount_to_call = amount_to_call if amount_to_call is not None else 0.0
+        if amount_to_call == 0.0 and self.current_street != Street.PREFLOP:
+            self.current_recommendation = 'Check'
+            self.session_logger.log_decision(
+                game_id=game_id,
+                street=self.current_street.name,
+                hero_cards=hero_cards,
+                board=board or [],
+                hero_position=self.hero_position,
+                pot_size=pot_size,
+                amount_to_call=0.0,
+                stack=stack,
+                equity_pct=0.0,
+                decision='Check',
+            )
             return
 
         # ---------- PREFLOP ----------
@@ -763,6 +853,18 @@ class OverlayEngine:
             self.current_recommendation = final_action
             combo = DecisionMaker._cards_to_combo(hero_cards)
             print(f"[PREFLOP] hero_cards={hero_cards} combo={combo} decision={final_action}")
+            self.session_logger.log_decision(
+                game_id=game_id,
+                street='PREFLOP',
+                hero_cards=hero_cards,
+                board=[],
+                hero_position=self.hero_position,
+                pot_size=pot_size,
+                amount_to_call=amount_to_call,
+                stack=stack,
+                equity_pct=0.0,
+                decision=final_action,
+            )
             return
 
         # ---------- POSTFLOP ----------
@@ -782,7 +884,10 @@ class OverlayEngine:
             dealer_seat  = getattr(self, '_last_dealer_seat', None)
         hero_is_ip = self.tracker.is_hero_in_position(active_seats, dealer_seat)
 
-        equity = self.solver.estimate_equity(hero_cards, board, active_range)
+        equity = self.solver.estimate_equity(hero_cards, board, active_range, trials=1000)
+        pot_odds_pct = amount_to_call / (pot_size + amount_to_call) * 100.0 if (pot_size + amount_to_call) > 0 else 0.0
+        if abs(equity - pot_odds_pct) < 5.0:
+            equity = self.solver.estimate_equity(hero_cards, board, active_range, trials=5000)
 
         # Phase 3: rough equity rank (0 = top of range, 1 = bottom)
         # Simple approximation: invert equity percentage
@@ -795,13 +900,27 @@ class OverlayEngine:
             bankroll=float(stack or 0),
             active_range=active_range,
             current_street=self.current_street,
-            board=board,                         # Phase 2
-            hero_is_ip=hero_is_ip,               # Phase 4
-            range_width_mult=range_width_mult,   # Phase 1
-            aggression_mult=aggression_mult,     # Phase 1
-            hero_equity_rank=hero_equity_rank,   # Phase 3
+            board=board,
+            hero_is_ip=hero_is_ip,
+            range_width_mult=range_width_mult,
+            aggression_mult=aggression_mult,
+            hero_equity_rank=hero_equity_rank,
+            hero_position=self.hero_position,
+            vs_position=opp_id,
         )
         self.current_recommendation = final_action
+        self.session_logger.log_decision(
+            game_id=game_id,
+            street=self.current_street.name,
+            hero_cards=hero_cards,
+            board=board or [],
+            hero_position=self.hero_position,
+            pot_size=pot_size,
+            amount_to_call=amount_to_call,
+            stack=stack,
+            equity_pct=equity,
+            decision=final_action,
+        )
 
     def safe_execute_decision(self, x: int, y: int) -> bool:
         print(f"DRY RUN - WOULD CLICK: {x}, {y}")
@@ -812,6 +931,7 @@ class OverlayEngine:
             self.root.mainloop()
         finally:
             self.running = False
+            self.session_logger.close()
 
 
 if __name__ == '__main__':
