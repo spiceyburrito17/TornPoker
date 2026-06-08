@@ -71,7 +71,7 @@ class SessionLogger:
             total = pot_size + amount_to_call
             pot_odds_pct = round(amount_to_call / total * 100.0, 2) if total > 0 else 0.0
 
-        ev_pct = round(equity_pct - pot_odds_pct, 2)
+        ev_pct = round(equity_pct - pot_odds_pct, 2) if amount_to_call > 0 else ''
 
         row = {
             'session_id':     self.session_id,
