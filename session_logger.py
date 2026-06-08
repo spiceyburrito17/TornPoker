@@ -13,6 +13,7 @@ class SessionLogger:
         'hero_cards', 'board', 'hero_position',
         'pot_size', 'amount_to_call', 'stack',
         'equity_pct', 'pot_odds_pct', 'ev_pct', 'decision',
+        'opp_vpip', 'opp_pfr', 'opp_af',
         'result_dollars', 'result_bb', 'showdown_seen', 'stack_start', 'stack_end',
     ]
 
@@ -69,6 +70,9 @@ class SessionLogger:
         stack:          Optional[str],
         equity_pct:     float,
         decision:       str,
+        opp_vpip:       Optional[float] = None,
+        opp_pfr:        Optional[float] = None,
+        opp_af:         Optional[float] = None,
     ) -> None:
         if self._current_hand is None:
             self.start_hand(game_id)
@@ -98,6 +102,9 @@ class SessionLogger:
             'pot_odds_pct':   pot_odds_pct,
             'ev_pct':         ev_pct,
             'decision':       decision,
+            'opp_vpip':       round(opp_vpip, 1) if opp_vpip is not None else '',
+            'opp_pfr':        round(opp_pfr, 1) if opp_pfr is not None else '',
+            'opp_af':         round(opp_af, 2) if opp_af is not None else '',
             'result_dollars': '',
             'result_bb':      '',
             'showdown_seen':  '',

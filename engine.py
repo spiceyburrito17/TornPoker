@@ -952,6 +952,9 @@ class OverlayEngine:
             stack=stack,
             equity_pct=equity,
             decision=final_action,
+            opp_vpip=self.tracker.get_vpip_rate(opp_id) if opp_id else None,
+            opp_pfr=self.tracker.get_pfr_rate(opp_id) if opp_id else None,
+            opp_af=self.tracker.summarize_player(opp_id).get('aggression_factor') if opp_id else None,
         )
         self.safe_execute_decision(final_action, pot_size=pot_size or 0.0)
 

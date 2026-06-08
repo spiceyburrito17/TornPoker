@@ -122,9 +122,15 @@ class PlayerTracker:
             'folds':             0,
             'aggression_factor': 0.0,
             'profile':           'UNKNOWN',
+            'seen_games':        [],
         })
-        if action in {'calls', 'raises', 'bets', 'folds', 'checks', 'limps'}:
+        # Only count hands once per unique game_id
+        if self.current_game_id and self.current_game_id not in record.get('seen_games', []):
+            record.setdefault('seen_games', []).append(self.current_game_id)
             record['hands'] = record.get('hands', 0) + 1
+            # Bound seen_games to prevent unbounded growth
+            if len(record['seen_games']) > 200:
+                record['seen_games'] = record['seen_games'][-100:]
 
         # VPIP: any voluntary money in preflop
         if is_preflop and action in {'calls', 'raises', 'bets', 'limps'}:
@@ -276,9 +282,18 @@ class TableTracker(PlayerTracker):
         return 'UTG'
 
     def get_primary_opponent(self) -> Optional[str]:
-        """Return the player with the most recorded hands (most reliable profile)."""
+        """Return the opponent most relevant to the current game."""
         if not self.players:
             return None
+        # Prefer opponent seen in the current game
+        if self.current_game_id:
+            current_game_players = [
+                p for p, rec in self.players.items()
+                if self.current_game_id in rec.get('seen_games', [])
+            ]
+            if current_game_players:
+                return max(current_game_players, key=lambda p: self.players[p].get('hands', 0))
+        # Fallback to global most frequent
         return max(self.players, key=lambda p: self.players[p].get('hands', 0))
 
     def is_hero_in_position(
