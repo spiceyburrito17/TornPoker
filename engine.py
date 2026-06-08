@@ -852,6 +852,13 @@ class OverlayEngine:
             pass
 
         print(f'[DECISION] street={self.current_street.name} hero_cards={hero_cards} amt={amount_to_call} pot={pot_size}')
+
+        # Deduplication — only log/act once per game+street combination
+        _decision_key = f"{game_id}_{self.current_street.name}"
+        if _decision_key == getattr(self, '_last_logged_decision', None):
+            return  # already logged this decision
+        self._last_logged_decision = _decision_key
+
         # ---------- PREFLOP ----------
         if self.current_street == Street.PREFLOP:
             with self.ocr_lock:
@@ -901,8 +908,8 @@ class OverlayEngine:
         opp_id = self.tracker.get_primary_opponent()
         if opp_id is None:
             print(f'[DECISION] no opponent profile yet — using default range')
-            # Use full default range so equity can still be estimated
-            active_range = list(self.range_matrix.get_active_combos('default') or [])
+            # Use top 50% of all combos as neutral default range
+            active_range = self.range_matrix.hand_order[:len(self.range_matrix.hand_order) // 2]
             opp_profile = {'vpip': 50.0, 'pfr': 25.0, 'af': 1.0}
             range_width_mult, aggression_mult = 1.0, 1.0
         else:
