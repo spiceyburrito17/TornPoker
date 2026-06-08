@@ -1,0 +1,7 @@
+session_id,timestamp,game_id,hand_num,street,hero_cards,board,hero_position,pot_size,amount_to_call,stack,equity_pct,pot_odds_pct,ev_pct,decision,opp_vpip,opp_pfr,opp_af,result_dollars,result_bb,showdown_seen,stack_start,stack_end
+c3115e8a,2026-06-08T18:11:33,,1,PREFLOP,9c Js,,BTN,515.0,5.0,5627,0.0,0.96,-0.96,Fold,,,,,,,,
+c3115e8a,2026-06-08T18:11:36,a8d83cb8213586044094c0e7810902,2,PREFLOP,9c Js,,BTN,20.0,5.0,5622,0.0,20.0,-20.0,Fold,,,,,,,,
+c3115e8a,2026-06-08T18:11:39,a8d83cb8213586144094c0e7810902,3,PREFLOP,9c Js,,BTN,30.0,10.0,5622,0.0,25.0,-25.0,Fold,,,,,,,,
+c3115e8a,2026-06-08T18:11:45,,4,FLOP,9c Js,6s Qc Jd,BTN,50.0,10.0,5612,1.5,16.67,-15.17,Call,,,,,,,,
+c3115e8a,2026-06-08T18:11:51,,4,TURN,9c Js,6s Qc Jd 3d,BTN,70.0,10.0,5602,1.05,12.5,-11.45,Call,,,,,,,,
+c3115e8a,2026-06-08T18:11:57,,4,RIVER,9c Js,6s Qc Jd 3d 8c,BTN,90.0,10.0,5592,1.5,10.0,-8.5,Fold,,,,,,,,
