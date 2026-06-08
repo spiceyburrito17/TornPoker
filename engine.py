@@ -58,7 +58,7 @@ class OverlayEngine:
         self.status_text = tk.StringVar(value='Initializing HUD...')
         
         # --- BRIGHT GREEN TEXT ON BLACK ---
-        self.status_label = tk.Label(self.canvas, textvariable=self.status_text, bg='black', fg='#00FF00', font=('Consolas', 12, 'bold'), justify='left')
+        self.status_label = tk.Label(self.canvas, textvariable=self.status_text, bg='black', fg='#00FF00', font=('Consolas', 12, 'bold'), justify='left', wraplength=440, anchor='nw')
         self.status_label.place(x=10, y=10)
         self.range_matrix = RangeMatrix()
         self.solver = MonteCarloSolver(trials=1000)
@@ -835,7 +835,9 @@ class OverlayEngine:
 
         # Show current recommendation prominently
         rec = getattr(self, 'current_recommendation', 'WAIT') or 'WAIT'
-        lines.append(f'>>> {rec} <<<')
+        ev = equity - pot_odds_pct if pot_odds_pct > 0 else None
+        ev_str = f' (EV: +{ev:.1f}%)' if ev and ev > 0 else (f' (EV: {ev:.1f}%)' if ev else '')
+        lines.append(f'>>> {rec}{ev_str} <<<')
 
         bb_100 = self.session_logger.get_bb_per_100()
         hands_count = len(self.session_logger._hands)
