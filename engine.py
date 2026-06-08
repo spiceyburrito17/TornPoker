@@ -751,6 +751,9 @@ class OverlayEngine:
                 if self.last_known['game_id'] is not None:
                     self.locked_stack = None
                 self.last_known['game_id'] = frame_data.get('game_id')
+                # New hand — reset board and street
+                self.last_known['board'] = []
+                self.current_street = Street.PREFLOP
             # else: keep existing game_id — OCR missed it this frame
 
     def _apply_log_bleed_protection(self, frame_data: dict) -> None:

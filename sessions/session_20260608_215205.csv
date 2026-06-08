@@ -1,0 +1,3 @@
+session_id,timestamp,game_id,hand_num,street,hero_cards,board,hero_position,pot_size,amount_to_call,stack,equity_pct,pot_odds_pct,ev_pct,decision,opp_vpip,opp_pfr,opp_af,result_dollars,result_bb,showdown_seen,stack_start,stack_end
+6b358530,2026-06-08T21:52:16,,1,PREFLOP,4h Jd,,CO,125.0,0.0,59950,0.0,0.0,,Fold,,,,,,,,
+6b358530,2026-06-08T21:52:17,,1,PREFLOP,4h Jd,,CO,125.0,0.0,59950,0.0,0.0,,Fold,,,,,,,,
