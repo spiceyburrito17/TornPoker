@@ -38,16 +38,21 @@ class OverlayEngine:
         self.root.title('TornPoker HUD')
         self.root.overrideredirect(True)
         self.root.attributes('-topmost', True)
-        self.root.attributes('-transparentcolor', 'grey')
-        self.root.geometry('420x220+-1900+20')
-        self.canvas = tk.Canvas(self.root, bg='grey', highlightthickness=0)
+        
+        # --- NEW SLEEK UI BACKGROUND ---
+        self.root.attributes('-alpha', 0.85)  # 85% solid, slightly see-through
+        self.root.geometry('450x250+50+50')   # Starts at top-left of MAIN screen
+        
+        self.canvas = tk.Canvas(self.root, bg='black', highlightthickness=0)
         self.canvas.pack(fill='both', expand=True)
         self.root.bind('<ButtonPress-1>', self.start_move)
         self.root.bind('<B1-Motion>', self.do_move)
         self.canvas.bind('<ButtonPress-1>', self.start_move)
         self.canvas.bind('<B1-Motion>', self.do_move)
         self.status_text = tk.StringVar(value='Initializing HUD...')
-        self.status_label = tk.Label(self.canvas, textvariable=self.status_text, bg='grey', fg='white', font=('Consolas', 11))
+        
+        # --- BRIGHT GREEN TEXT ON BLACK ---
+        self.status_label = tk.Label(self.canvas, textvariable=self.status_text, bg='black', fg='#00FF00', font=('Consolas', 12, 'bold'), justify='left')
         self.status_label.place(x=10, y=10)
         self.range_matrix = RangeMatrix()
         self.solver = MonteCarloSolver(trials=1000)
@@ -76,6 +81,7 @@ class OverlayEngine:
         self.capture_region = {'top': 150, 'left': -1600, 'width': 1280, 'height': 850}
         self.hero_cards_region = {'top': 450, 'left': 605, 'width': 147, 'height': 105}
         self.board_cards_region = {'top': 220, 'left': 450, 'width': 395, 'height': 105}
+        self.stack_region = {'top': 380, 'left': 850, 'width': 100, 'height': 40} # Adjust these later to fit over your money
         self.decision_maker = DecisionMaker()
         self.button_coords = {}
         self.last_known = {
@@ -90,6 +96,8 @@ class OverlayEngine:
         self.hero_position = 'BTN'
         self.current_street = Street.PREFLOP
         self.current_recommendation = 'WAIT'
+        self._last_active_seats = []
+        self._last_dealer_seat  = None
         # Debounce / stability tracking to avoid acting on transient UI animations
         self.stable_frames = 0
         self.REQUIRED_STABLE_FRAMES = 3
@@ -178,6 +186,7 @@ class OverlayEngine:
                     disp = cv2.cvtColor(frame.copy(), cv2.COLOR_RGB2BGR)
                 except Exception:
                     disp = frame.copy()
+                    visual_stack = None
                 for result in text_results:
                     bbox, detected_text, _confidence = result
                     normalized_text = detected_text.strip().lower()
@@ -190,6 +199,17 @@ class OverlayEngine:
                     top_offset = int(self.capture_region.get('top', 0)) if isinstance(self.capture_region, dict) else 0
                     monitor_x = center_x + left_offset
                     monitor_y = center_y + top_offset
+                    # --- NEW STACK CAPTURE LOGIC ---
+                    if getattr(self, 'stack_region', None):
+                        sx = self.stack_region['left']
+                        sy = self.stack_region['top']
+                        sw = self.stack_region['width']
+                        sh = self.stack_region['height']
+                        if sx <= center_x <= sx + sw and sy <= center_y <= sy + sh:
+                            cleaned = re.sub(r'[^0-9.]', '', detected_text)
+                            if cleaned:
+                                visual_stack = cleaned
+                    # -------------------------------
 
                     # Draw bounding polygon and center on debug frame
                     try:
@@ -239,6 +259,13 @@ class OverlayEngine:
                         w = self.board_cards_region['width']
                         h = self.board_cards_region['height']
                         cv2.rectangle(disp, (x, y), (x + w, y + h), (0, 255, 255), 2)
+                    if getattr(self, 'stack_region', None):
+                        x = self.stack_region['left']
+                        y = self.stack_region['top']
+                        w = self.stack_region['width']
+                        h = self.stack_region['height']
+                        cv2.rectangle(disp, (x, y), (x + w, y + h), (0, 0, 255), 2)
+                        cv2.putText(disp, "STACK", (x, y - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 0, 255), 1)
                 except Exception:
                     pass
 
@@ -254,9 +281,13 @@ class OverlayEngine:
                     # Persist hero position for decision routing
                     if hero_position is not None:
                         self.hero_position = hero_position
+                        self._last_active_seats = active_seats
+                        self._last_dealer_seat = dealer_seat
 
                 text_blob = '\n'.join(text_lines)
                 parsed = self._parse_ocr_text(text_blob)
+                if visual_stack is not None:
+                    parsed['stack'] = visual_stack
                 if hero_cards:
                     parsed['hero_cards'] = hero_cards
                 if board_cards:
@@ -269,7 +300,7 @@ class OverlayEngine:
                     amount_to_call_val = parsed['amount_to_call']
                     potential_pot = pot_size_val + amount_to_call_val
                     req_equity = (amount_to_call_val / potential_pot) * 100 if potential_pot > 0 else 0.0
-                    opp_id = next(iter(self.tracker.players), None)
+                    opp_id = self.tracker.get_primary_opponent()
                     if opp_id:
                         active_range = self.range_matrix.get_active_combos(opp_id)
                         hero_equity = self.solver.estimate_equity(hero_cards, board_cards, active_range)
@@ -587,6 +618,8 @@ class OverlayEngine:
                 self._apply_bankroll_lock(frame_data)
                 self._apply_log_bleed_protection(frame_data)
                 self.tracker.parse_action_log(frame_data.get('log', ''))
+                if frame_data.get('stack') is not None:
+                    self.last_known['stack'] = frame_data['stack']
 
             hero_cards = self.last_known['hero_cards']
             board = self.last_known['board']
@@ -638,41 +671,66 @@ class OverlayEngine:
         self.last_known['game_id'] = game_id
 
     def _build_summary(self, hero_cards, board, stack, pot_size, amount_to_call) -> str:
+        from decision_maker import analyze_board_texture, calculate_mdf
         lines = []
+
         if hero_cards:
             lines.append(f'Hero: {hero_cards[0]} {hero_cards[1]}')
         else:
             lines.append('Hero: unknown')
+
         if board:
-            lines.append(f'Board: {" ".join(board)}')
+            texture = analyze_board_texture(board)
+            lines.append(
+                f'Board: {" ".join(board)} '
+                f'[{texture["texture_label"]} | wet={texture["wetness"]:.2f}]'
+            )
         else:
             lines.append('Board: empty')
-        if stack:
-            lines.append(f'Bankroll: ${stack}')
-        else:
-            lines.append('Bankroll: unknown')
+
+        lines.append(f'Bankroll: ${stack}' if stack else 'Bankroll: unknown')
         if pot_size is not None:
             lines.append(f'Pot: ${pot_size:.2f}')
         if amount_to_call is not None:
             lines.append(f'Call: ${amount_to_call:.2f}')
-        if hero_cards and board is not None:
-            opp_id = next(iter(self.tracker.players), None)
-            equity_text = 'N/A'
-            pot_odds_text = 'N/A'
-            if amount_to_call is not None and pot_size is not None and amount_to_call >= 0 and pot_size >= 0:
-                total_pot = pot_size + amount_to_call
-                if total_pot > 0:
-                    pot_odds = amount_to_call / total_pot * 100.0
+
+        opp_id = self.tracker.get_primary_opponent()
+        if hero_cards and board is not None and opp_id:
+            vpip = self.tracker.get_vpip_rate(opp_id)
+            pfr  = self.tracker.get_pfr_rate(opp_id)
+            profile = self.tracker.get_player_profile(opp_id)
+            rw_mult, ag_mult = self.tracker.get_range_modifiers(opp_id)
+            lines.append(
+                f'Opp ({opp_id}): {profile} | '
+                f'VPIP={vpip:.0f}% PFR={pfr:.0f}% '
+                f'RangeMult={rw_mult:.2f} AggMult={ag_mult:.2f}'
+            )
+
+            active_range = self.range_matrix.get_active_combos(opp_id)
+            equity = self.solver.estimate_equity(hero_cards, board, active_range)
+
+            equity_text    = f'{equity:.1f}%'
+            pot_odds_text  = 'N/A'
+            mdf_text       = 'N/A'
+            if amount_to_call is not None and pot_size is not None and pot_size >= 0:
+                total = pot_size + amount_to_call
+                if total > 0:
+                    pot_odds = amount_to_call / total * 100.0
                     pot_odds_text = f'{pot_odds:.1f}%'
-            if opp_id:
-                self.range_matrix.add_opponent(opp_id)
-                self.range_matrix.update_range_from_action(opp_id, 'raise', self.tracker.get_pfr_rate(opp_id))
-                active_range = self.range_matrix.get_active_combos(opp_id)
-                equity = self.solver.estimate_equity(hero_cards, board, active_range)
-                equity_text = f'{equity:.1f}%'
-                lines.append(f'Opponent ({opp_id}) profile: {self.tracker.get_player_profile(opp_id)}')
-                lines.append(f'Range: {self.range_matrix.describe_range(opp_id)}')
-            lines.append(f'Equity: {equity_text} | Pot Odds: {pot_odds_text}')
+                if amount_to_call > 0:
+                    mdf = calculate_mdf(amount_to_call, pot_size)
+                    mdf_text = f'{mdf * 100:.1f}%'
+
+            # Phase 4: position
+            with self.ocr_lock:
+                active_seats = getattr(self, '_last_active_seats', [0])
+                dealer_seat  = getattr(self, '_last_dealer_seat', None)
+            ip_label = 'IP' if self.tracker.is_hero_in_position(active_seats, dealer_seat) else 'OOP'
+            lines.append(
+                f'Equity: {equity_text} | PotOdds: {pot_odds_text} '
+                f'| MDF: {mdf_text} | Pos: {ip_label}'
+            )
+
         return '\n'.join(lines)
 
     def _try_make_decision(self, hero_cards, board, stack, pot_size, amount_to_call) -> None:
@@ -680,47 +738,56 @@ class OverlayEngine:
         if not hero_cards:
             return
 
-        # Preflop bypass: use PFR chart and avoid Monte Carlo
+        # ---------- PREFLOP ----------
         if self.current_street == Street.PREFLOP:
-            # Build preflop context
+            with self.ocr_lock:
+                log = self.latest_frame_data.get('log', '')
+            raise_count = len(re.findall(r'\b(raises|raised|re-raise|3bet)\b', log, re.IGNORECASE))
+            if raise_count >= 2:
+                action_type = 'vs_3bet'
+                vs_pos = self.hero_position
+            elif raise_count == 1:
+                action_type = 'vs_open'
+                raiser_match = re.search(r'([A-Za-z0-9_]+)\s+raises', log, re.IGNORECASE)
+                vs_pos = raiser_match.group(1) if raiser_match else 'CO'
+            else:
+                action_type = 'unopened'
+                vs_pos = None
             context = PreflopContext(
                 position=self.hero_position,
-                hero_action_type='unopened',
-                vs_position=None,
-                effective_stack_bb=100.0,
+                hero_action_type=action_type,
+                vs_position=vs_pos,
+                effective_stack_bb=float(stack) / 1.0 if stack else 100.0,
             )
             final_action = self.decision_maker.choose_preflop_action(hero_cards, context)
             self.current_recommendation = final_action
-
-            # Log preflop decision
             combo = DecisionMaker._cards_to_combo(hero_cards)
-            print(f"[PREFLOP] hero_cards={hero_cards} combo={combo} context={context} decision={final_action}")
-
-            if final_action == 'Raise':
-                raise_coord = self.button_coords.get('raise')
-                if raise_coord:
-                    self.safe_execute_decision(raise_coord[0], raise_coord[1])
-                return
-            elif final_action == 'Call':
-                call_coord = self.button_coords.get('call')
-                if call_coord:
-                    self.safe_execute_decision(call_coord[0], call_coord[1])
-                return
-            elif final_action == 'Fold':
-                fold_coord = self.button_coords.get('fold')
-                if fold_coord:
-                    self.safe_execute_decision(fold_coord[0], fold_coord[1])
-                return
+            print(f"[PREFLOP] hero_cards={hero_cards} combo={combo} decision={final_action}")
             return
 
-        # Post-flop: use equity + EV decision
+        # ---------- POSTFLOP ----------
         if pot_size is None or amount_to_call is None:
             return
-        opp_id = next(iter(self.tracker.players), None)
+        opp_id = self.tracker.get_primary_opponent()
         if not opp_id:
             return
+
+        # Phase 1: pull VPIP/PFR-based range modifiers
+        range_width_mult, aggression_mult = self.tracker.get_range_modifiers(opp_id)
         active_range = self.range_matrix.get_active_combos(opp_id)
+
+        # Phase 4: is hero acting last?
+        with self.ocr_lock:
+            active_seats = getattr(self, '_last_active_seats', [0])
+            dealer_seat  = getattr(self, '_last_dealer_seat', None)
+        hero_is_ip = self.tracker.is_hero_in_position(active_seats, dealer_seat)
+
         equity = self.solver.estimate_equity(hero_cards, board, active_range)
+
+        # Phase 3: rough equity rank (0 = top of range, 1 = bottom)
+        # Simple approximation: invert equity percentage
+        hero_equity_rank = max(0.0, min(1.0, 1.0 - equity / 100.0))
+
         final_action = self.decision_maker.choose_action(
             equity_pct=equity,
             pot_size=pot_size,
@@ -728,38 +795,13 @@ class OverlayEngine:
             bankroll=float(stack or 0),
             active_range=active_range,
             current_street=self.current_street,
+            board=board,                         # Phase 2
+            hero_is_ip=hero_is_ip,               # Phase 4
+            range_width_mult=range_width_mult,   # Phase 1
+            aggression_mult=aggression_mult,     # Phase 1
+            hero_equity_rank=hero_equity_rank,   # Phase 3
         )
         self.current_recommendation = final_action
-
-        # Handle sized raises: e.g., 'Raise_Pot', 'Raise_Half', 'Raise_AllIn'
-        if isinstance(final_action, str) and final_action.startswith('Raise'):
-            parts = final_action.split('_')
-            size_key = parts[1].lower() if len(parts) > 1 else 'pot'
-            sizing_map_keys = {
-                'half': 'raise_half',
-                'pot': 'raise_pot',
-                'allin': 'raise_allin',
-                'all': 'raise_allin'
-            }
-            sizing_key = sizing_map_keys.get(size_key, 'raise_pot')
-            sizing_coord = self.button_coords.get(sizing_key)
-            raise_coord = self.button_coords.get('raise')
-            if sizing_coord and raise_coord:
-                try:
-                    self.ghost.click_sequence([
-                        {'x': sizing_coord[0], 'y': sizing_coord[1]},
-                        {'x': raise_coord[0], 'y': raise_coord[1]}
-                    ])
-                except Exception:
-                    pass
-                return
-            if raise_coord:
-                self.safe_execute_decision(raise_coord[0], raise_coord[1])
-            return
-
-        target = self.button_coords.get(final_action.lower())
-        if target:
-            self.safe_execute_decision(target[0], target[1])
 
     def safe_execute_decision(self, x: int, y: int) -> bool:
         print(f"DRY RUN - WOULD CLICK: {x}, {y}")
