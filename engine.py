@@ -860,6 +860,7 @@ class OverlayEngine:
             )
             return
 
+        print(f'[DECISION] street={self.current_street.name} hero_cards={hero_cards} amt={amount_to_call} pot={pot_size}')
         # ---------- PREFLOP ----------
         if self.current_street == Street.PREFLOP:
             with self.ocr_lock:
