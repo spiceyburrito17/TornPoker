@@ -693,7 +693,10 @@ class OverlayEngine:
                 self._stable_snapshot = None
             summary = self._build_summary(hero_cards, board, stack, pot_size, amount_to_call)
             self.status_text.set(summary)
-        except Exception:
+        except Exception as e:
+            import traceback
+            print(f'[DECISION ERROR] {e}')
+            traceback.print_exc()
             self.status_text.set('HUD error: retrying...')
         finally:
             self.root.after(30, self._main_tick)
@@ -890,10 +893,14 @@ class OverlayEngine:
             return
 
         # ---------- POSTFLOP ----------
-        if pot_size is None or amount_to_call is None:
+        if pot_size is None:
+            print(f'[DECISION SKIP] pot_size is None — skipping decision')
             return
+        if amount_to_call is None:
+            amount_to_call = 0.0
         opp_id = self.tracker.get_primary_opponent()
         if not opp_id:
+            print(f'[DECISION SKIP] no primary opponent found')
             return
 
         # Phase 1: pull VPIP/PFR-based range modifiers
