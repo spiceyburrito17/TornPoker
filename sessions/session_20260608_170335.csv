@@ -1,8 +1,0 @@
-session_id,timestamp,game_id,hand_num,street,hero_cards,board,hero_position,pot_size,amount_to_call,stack,equity_pct,pot_odds_pct,ev_pct,decision,opp_vpip,opp_pfr,opp_af,result_dollars,result_bb,showdown_seen,stack_start,stack_end
-7f8699b0,2026-06-08T17:08:37,,1,PREFLOP,2c 2d,,UTG,50.0,5.0,1970,0.0,9.09,-9.09,Fold,,,,,,,,
-7f8699b0,2026-06-08T17:08:37,,1,PREFLOP,2c 2d,,UTG,50.0,5.0,1970,0.0,9.09,-9.09,Fold,,,,,,,,
-7f8699b0,2026-06-08T17:08:37,,1,PREFLOP,2c 2d,,UTG,50.0,5.0,1970,0.0,9.09,-9.09,Fold,,,,,,,,
-7f8699b0,2026-06-08T17:08:38,,1,PREFLOP,2c 2d,,UTG,50.0,5.0,1970,0.0,9.09,-9.09,Fold,,,,,,,,
-7f8699b0,2026-06-08T17:08:38,,1,PREFLOP,2c 2d,,UTG,50.0,5.0,1970,0.0,9.09,-9.09,Fold,,,,,,,,
-7f8699b0,2026-06-08T17:08:38,,1,PREFLOP,2c 2d,,UTG,50.0,5.0,1970,0.0,9.09,-9.09,Fold,,,,,,,,
-7f8699b0,2026-06-08T17:08:38,,1,PREFLOP,2c 2d,,UTG,50.0,5.0,1970,0.0,9.09,-9.09,Fold,,,,,,,,
