@@ -13,14 +13,16 @@ class SessionLogger:
         'hero_cards', 'board', 'hero_position',
         'pot_size', 'amount_to_call', 'stack',
         'equity_pct', 'pot_odds_pct', 'ev_pct', 'decision',
+        'result_dollars', 'result_bb', 'showdown_seen', 'stack_start', 'stack_end',
     ]
 
-    def __init__(self, session_dir: str = 'sessions'):
+    def __init__(self, session_dir: str = 'sessions', big_blind: float = 20.0):
         os.makedirs(session_dir, exist_ok=True)
         self.session_id = str(uuid.uuid4())[:8]
         ts = datetime.now().strftime('%Y%m%d_%H%M%S')
         self.csv_path  = os.path.join(session_dir, f'session_{ts}.csv')
         self.json_path = os.path.join(session_dir, f'hands_{ts}.json')
+        self.big_blind = big_blind
         self._hand_num = 0
         self._current_hand: Optional[dict] = None
         self._hands: List[dict] = []
@@ -48,6 +50,11 @@ class SessionLogger:
             'hero_cards':  None,
             'board':       [],
             'decisions':   [],
+            'result_dollars': None,
+            'result_bb':      None,
+            'showdown_seen':  False,
+            'stack_start':    None,
+            'stack_end':      None,
         }
 
     def log_decision(
@@ -65,6 +72,8 @@ class SessionLogger:
     ) -> None:
         if self._current_hand is None:
             self.start_hand(game_id)
+        if self._current_hand is not None and self._current_hand.get('stack_start') is None:
+            self._current_hand['stack_start'] = self._coerce_stack_value(stack)
 
         pot_odds_pct = 0.0
         if pot_size and amount_to_call:
@@ -89,6 +98,11 @@ class SessionLogger:
             'pot_odds_pct':   pot_odds_pct,
             'ev_pct':         ev_pct,
             'decision':       decision,
+            'result_dollars': '',
+            'result_bb':      '',
+            'showdown_seen':  '',
+            'stack_start':    '',
+            'stack_end':      '',
         }
         self._writer.writerow(row)
         self._csv_file.flush()
@@ -102,12 +116,55 @@ class SessionLogger:
                 self._current_hand['board'] = decision_record['board']
             self._current_hand['decisions'].append(decision_record)
 
+    def record_outcome(self, game_id: str, result_dollars: float, showdown_seen: bool = False) -> None:
+        if self._current_hand is None:
+            return
+        self._current_hand['game_id'] = game_id
+        self._current_hand['result_dollars'] = result_dollars
+        self._current_hand['result_bb'] = round(result_dollars / self.big_blind, 2)
+        self._current_hand['showdown_seen'] = showdown_seen
+
     def _finalise_hand(self) -> None:
         if self._current_hand:
+            stack_start = self._current_hand.get('stack_start')
+            stack_end = self._extract_stack_end(self._current_hand)
+            self._current_hand['stack_end'] = stack_end
+            if self._current_hand.get('result_dollars') is None and stack_start is not None and stack_end is not None:
+                result_dollars = round(stack_end - stack_start, 2)
+                self._current_hand['result_dollars'] = result_dollars
+                self._current_hand['result_bb'] = round(result_dollars / self.big_blind, 2)
             self._current_hand['ended_at'] = time.time()
             self._hands.append(self._current_hand)
             self._current_hand = None
             self._flush_json()
+
+    def get_bb_per_100(self) -> float:
+        completed = [hand for hand in self._hands if hand.get('result_bb') is not None]
+        if not completed:
+            return 0.0
+        total_bb = sum(hand['result_bb'] for hand in completed)
+        return (total_bb / len(completed)) * 100
+
+    def _extract_stack_end(self, hand: dict) -> Optional[float]:
+        decisions = hand.get('decisions') or []
+        for decision in reversed(decisions):
+            stack_value = self._coerce_stack_value(decision.get('stack'))
+            if stack_value is not None:
+                return stack_value
+        return None
+
+    def _coerce_stack_value(self, stack: Optional[str]) -> Optional[float]:
+        if stack in (None, ''):
+            return None
+        if isinstance(stack, (int, float)):
+            return float(stack)
+        if isinstance(stack, str):
+            cleaned = stack.replace('$', '').replace(',', '').strip()
+            try:
+                return float(cleaned)
+            except ValueError:
+                return None
+        return None
 
     def _flush_json(self) -> None:
         try:

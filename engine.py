@@ -1,3 +1,5 @@
+HERO_WINS_RE = re.compile(r'(?:Hero|you)\s+wins?\s+\$?([0-9,]+(?:\.[0-9]{1,2})?)', re.IGNORECASE)
+HERO_LOSES_RE = re.compile(r'(?:Hero|you)\s+(?:loses?|mucks?|folds?)\b', re.IGNORECASE)
 import json
 import math
 import re
@@ -111,6 +113,7 @@ class OverlayEngine:
         self._last_range_game_id = None
         self._last_range_street = None
         self.session_logger = SessionLogger()
+        self._showdown_recorded_for = None
         self._logger_game_id = None
         self.running = True
         self.ocr_lock = threading.Lock()
@@ -305,6 +308,26 @@ class OverlayEngine:
                         self._last_dealer_seat = dealer_seat
 
                 text_blob = '\n'.join(text_lines)
+                current_game_id = self.last_known.get('game_id')
+                if self._showdown_recorded_for != current_game_id:
+                    wins_match = HERO_WINS_RE.search(text_blob)
+                    if wins_match:
+                        amount = float(wins_match.group(1).replace(',', ''))
+                        self.session_logger.record_outcome(
+                            current_game_id or '',
+                            amount,
+                            showdown_seen=True,
+                        )
+                        self._showdown_recorded_for = current_game_id
+                    else:
+                        loses_match = HERO_LOSES_RE.search(text_blob)
+                        if loses_match:
+                            self.session_logger.record_outcome(
+                                current_game_id or '',
+                                0.0,
+                                showdown_seen=True,
+                            )
+                            self._showdown_recorded_for = current_game_id
                 parsed = self._parse_ocr_text(text_blob)
                 if visual_stack is not None:
                     parsed['stack'] = visual_stack
@@ -768,6 +791,9 @@ class OverlayEngine:
                 f'| MDF: {mdf_text} | Pos: {ip_label}'
             )
 
+        bb_100 = self.session_logger.get_bb_per_100()
+        hands_count = len(self.session_logger._hands)
+        lines.append(f'Session: {hands_count} hands | BB/100: {bb_100:+.1f}')
         return '\n'.join(lines)
 
     def _update_range_matrix(self, log: str, game_id) -> None:
