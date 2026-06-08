@@ -926,6 +926,7 @@ class OverlayEngine:
         hero_is_ip = self.tracker.is_hero_in_position(active_seats, dealer_seat)
 
         equity = self.solver.estimate_equity(hero_cards, board, active_range, trials=1000)
+        print(f"[MC RESULT] equity={equity}")
         pot_odds_pct = amount_to_call / (pot_size + amount_to_call) * 100.0 if (pot_size + amount_to_call) > 0 else 0.0
         if abs(equity - pot_odds_pct) < 5.0:
             equity = self.solver.estimate_equity(hero_cards, board, active_range, trials=5000)

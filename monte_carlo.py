@@ -26,6 +26,7 @@ class MonteCarloSolver:
         trials = self.trials if trials is None else max(10, trials)
         hero_list = self._normalize_cards(hero_cards)
         board_list = self._normalize_cards(community_cards)
+        print(f"[MC DEBUG] hero={hero_cards}→{hero_list} board={community_cards}→{board_list} range_len={len(self._build_actual_range(opponent_range, set(hero_list + board_list)))}")
         blocked = set(hero_list + board_list)
         actual_opponent_hands = self._build_actual_range(opponent_range, blocked)
         if not actual_opponent_hands:
