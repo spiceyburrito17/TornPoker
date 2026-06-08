@@ -1,0 +1,61 @@
+[
+  {
+    "session_id": "70e07680",
+    "hand_num": 1,
+    "game_id": null,
+    "started_at": 1780906099.7265549,
+    "hero_cards": [
+      "Ac",
+      "3c"
+    ],
+    "board": [
+      "6d",
+      "Qs",
+      "6s",
+      "7h",
+      "7c"
+    ],
+    "decisions": [
+      {
+        "session_id": "70e07680",
+        "timestamp": "2026-06-08T17:38:19",
+        "game_id": "",
+        "hand_num": 1,
+        "street": "RIVER",
+        "hero_cards": [
+          "Ac",
+          "3c"
+        ],
+        "board": [
+          "6d",
+          "Qs",
+          "6s",
+          "7h",
+          "7c"
+        ],
+        "hero_position": "CO",
+        "pot_size": 45.0,
+        "amount_to_call": 0.0,
+        "stack": "5392",
+        "equity_pct": 1.06,
+        "pot_odds_pct": 0.0,
+        "ev_pct": "",
+        "decision": "Fold",
+        "opp_vpip": "",
+        "opp_pfr": "",
+        "opp_af": "",
+        "result_dollars": "",
+        "result_bb": "",
+        "showdown_seen": "",
+        "stack_start": "",
+        "stack_end": ""
+      }
+    ],
+    "result_dollars": 0.0,
+    "result_bb": 0.0,
+    "showdown_seen": false,
+    "stack_start": 5392.0,
+    "stack_end": 5392.0,
+    "ended_at": 1780906135.960538
+  }
+]
