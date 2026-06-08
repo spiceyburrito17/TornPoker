@@ -855,8 +855,8 @@ class OverlayEngine:
 
         print(f'[DECISION] street={self.current_street.name} hero_cards={hero_cards} amt={amount_to_call} pot={pot_size}')
 
-        # Deduplication — only log/act once per game+street combination
-        _decision_key = f"{game_id}_{self.current_street.name}"
+        # Deduplication — only log/act once per game+hand+street combination
+        _decision_key = f"{game_id}_{self.session_logger._hand_num}_{self.current_street.name}"
         if _decision_key == getattr(self, '_last_logged_decision', None):
             return  # already logged this decision
         self._last_logged_decision = _decision_key
