@@ -295,7 +295,7 @@ class DecisionMaker:
         if current_street is not None:
             street_name = current_street.name if hasattr(current_street, 'name') else str(current_street)
 
-        range_adv = self._classify_range_advantage(equity_pct, hero_is_ip)
+        range_adv = self._classify_range_advantage(equity_pct, hero_is_ip, range_width_mult)
 
         matchup_key = f"{hero_position}_vs_{vs_position}"
         tree_node = (
@@ -313,11 +313,13 @@ class DecisionMaker:
         return self._map_tree_action(raw_action, pot_size, amount_to_call, bankroll)
 
     @staticmethod
-    def _classify_range_advantage(equity_pct: float, hero_is_ip: bool) -> str:
+    def _classify_range_advantage(equity_pct: float, hero_is_ip: bool, range_width: float = 1.0) -> str:
         prefix = 'IP' if hero_is_ip else 'OOP'
-        if equity_pct >= 58:
+        ahead_thresh  = 58 + (1.0 - range_width) * 10
+        behind_thresh = 42 - (1.0 - range_width) * 10
+        if equity_pct >= ahead_thresh:
             return f'{prefix}_AHEAD'
-        if equity_pct <= 42:
+        if equity_pct <= behind_thresh:
             return f'{prefix}_BEHIND'
         return f'{prefix}_EVEN'
 
@@ -340,16 +342,16 @@ class DecisionMaker:
     def _map_tree_action(raw: str, pot_size: float, amount_to_call: float, bankroll: float) -> str:
         spr = bankroll / pot_size if pot_size > 0 else 99.0
         mapping = {
-            'check': 'Check',
-            'call':  'Call',
-            'fold':  'Fold',
-            'bet_33':  'Raise_Half',
+            'check':   'Check',
+            'call':    'Call',
+            'fold':    'Fold',
+            'bet_33':  'Raise_Third',
             'bet_50':  'Raise_Half',
             'bet_75':  'Raise_Pot',
             'bet_pot': 'Raise_Pot',
         }
         action = mapping.get(raw, 'Check')
-        if action in ('Raise_Half', 'Raise_Pot') and spr <= 0.4:
+        if action in ('Raise_Third', 'Raise_Half', 'Raise_Pot') and spr <= 0.4:
             action = 'Raise_AllIn'
         if amount_to_call > 0 and action == 'Check':
             action = 'Call'

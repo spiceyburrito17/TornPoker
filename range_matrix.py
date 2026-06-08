@@ -74,7 +74,8 @@ class RangeMatrix:
         self.add_opponent(player_id)
         normalized = action.strip().lower()
         if normalized == 'call':
-            for combo in ['AA', 'KK', 'QQ']:
+            self.narrow_top_percent(player_id, 0.45)
+            for combo in ['AA', 'KK']:
                 if combo in self.opponent_ranges[player_id]:
                     self.opponent_ranges[player_id][combo] = False
         elif normalized == 'raise':
@@ -92,16 +93,38 @@ class RangeMatrix:
         self.add_opponent(player_id)
         if not board_cards:
             return
-        blocked_ranks = set(card[0] for card in board_cards if len(card) >= 2)
+        blocked_cards = set()
+        for card in board_cards:
+            if len(card) >= 2:
+                blocked_cards.add(card[0].upper() + card[1].lower())
+        blocked_ranks = set(c[0] for c in blocked_cards)
+        blocked_suits = {}
+        for c in blocked_cards:
+            blocked_suits.setdefault(c[0], set()).add(c[1])
+
         for combo in self.hand_order:
             if not self.opponent_ranges[player_id].get(combo, False):
                 continue
             if len(combo) == 2:
-                if combo[0] in blocked_ranks:
-                    self.opponent_ranges[player_id][combo] = False
-            else:
-                if combo[0] in blocked_ranks or combo[1] in blocked_ranks:
-                    self.opponent_ranges[player_id][combo] = False
+                rank = combo[0]
+                if rank in blocked_ranks:
+                    suits_blocked = blocked_suits.get(rank, set())
+                    remaining = 4 - len(suits_blocked)
+                    if remaining <= 0:
+                        self.opponent_ranges[player_id][combo] = False
+            elif len(combo) == 3:
+                hi, lo, suf = combo[0], combo[1], combo[2]
+                hi_suits_blocked = blocked_suits.get(hi, set())
+                lo_suits_blocked = blocked_suits.get(lo, set())
+                if suf == 's':
+                    available_suits = {'h', 'd', 'c', 's'} - hi_suits_blocked - lo_suits_blocked
+                    if not available_suits:
+                        self.opponent_ranges[player_id][combo] = False
+                else:
+                    hi_avail = 4 - len(hi_suits_blocked)
+                    lo_avail = 4 - len(lo_suits_blocked)
+                    if hi_avail <= 0 or lo_avail <= 0:
+                        self.opponent_ranges[player_id][combo] = False
 
     def describe_range(self, player_id: str) -> str:
         active = self.get_active_combos(player_id)

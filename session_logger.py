@@ -2,36 +2,46 @@ import csv
 import json
 import os
 import time
+import uuid
 from datetime import datetime
 from typing import List, Optional
 
 
 class SessionLogger:
     CSV_FIELDS = [
-        'timestamp', 'game_id', 'hand_num', 'street',
+        'session_id', 'timestamp', 'game_id', 'hand_num', 'street',
         'hero_cards', 'board', 'hero_position',
         'pot_size', 'amount_to_call', 'stack',
-        'equity_pct', 'pot_odds_pct', 'decision',
+        'equity_pct', 'pot_odds_pct', 'ev_pct', 'decision',
     ]
 
     def __init__(self, session_dir: str = 'sessions'):
         os.makedirs(session_dir, exist_ok=True)
+        self.session_id = str(uuid.uuid4())[:8]
         ts = datetime.now().strftime('%Y%m%d_%H%M%S')
         self.csv_path  = os.path.join(session_dir, f'session_{ts}.csv')
         self.json_path = os.path.join(session_dir, f'hands_{ts}.json')
         self._hand_num = 0
         self._current_hand: Optional[dict] = None
         self._hands: List[dict] = []
+        self._closed = False
         self._csv_file = open(self.csv_path, 'w', newline='', encoding='utf-8')
         self._writer = csv.DictWriter(self._csv_file, fieldnames=self.CSV_FIELDS)
         self._writer.writeheader()
         self._csv_file.flush()
+
+    def __del__(self):
+        try:
+            self.close()
+        except Exception:
+            pass
 
     def start_hand(self, game_id: Optional[str]) -> None:
         if self._current_hand:
             self._finalise_hand()
         self._hand_num += 1
         self._current_hand = {
+            'session_id':  self.session_id,
             'hand_num':    self._hand_num,
             'game_id':     game_id,
             'started_at':  time.time(),
@@ -61,7 +71,10 @@ class SessionLogger:
             total = pot_size + amount_to_call
             pot_odds_pct = round(amount_to_call / total * 100.0, 2) if total > 0 else 0.0
 
+        ev_pct = round(equity_pct - pot_odds_pct, 2)
+
         row = {
+            'session_id':     self.session_id,
             'timestamp':      datetime.now().isoformat(timespec='seconds'),
             'game_id':        game_id or '',
             'hand_num':       self._hand_num,
@@ -74,6 +87,7 @@ class SessionLogger:
             'stack':          stack or '',
             'equity_pct':     round(equity_pct, 2),
             'pot_odds_pct':   pot_odds_pct,
+            'ev_pct':         ev_pct,
             'decision':       decision,
         }
         self._writer.writerow(row)
@@ -103,9 +117,13 @@ class SessionLogger:
             pass
 
     def close(self) -> None:
+        if self._closed:
+            return
+        self._closed = True
         self._finalise_hand()
         try:
             self._csv_file.close()
         except Exception:
             pass
         self._flush_json()
+
