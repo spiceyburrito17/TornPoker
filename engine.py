@@ -845,20 +845,8 @@ class OverlayEngine:
 
         amount_to_call = amount_to_call if amount_to_call is not None else 0.0
         if amount_to_call == 0.0 and self.current_street != Street.PREFLOP:
-            self.current_recommendation = 'Check'
-            self.session_logger.log_decision(
-                game_id=game_id,
-                street=self.current_street.name,
-                hero_cards=hero_cards,
-                board=board or [],
-                hero_position=self.hero_position,
-                pot_size=pot_size,
-                amount_to_call=0.0,
-                stack=stack,
-                equity_pct=0.0,
-                decision='Check',
-            )
-            return
+            # Free action — still evaluate bet vs check, don't auto-skip
+            pass
 
         print(f'[DECISION] street={self.current_street.name} hero_cards={hero_cards} amt={amount_to_call} pot={pot_size}')
         # ---------- PREFLOP ----------
