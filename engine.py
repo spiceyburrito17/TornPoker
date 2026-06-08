@@ -330,6 +330,17 @@ class OverlayEngine:
                             )
                             self._showdown_recorded_for = current_game_id
                 parsed = self._parse_ocr_text(text_blob)
+                # Dedicated preprocessed stack crop for better digit accuracy
+                if getattr(self, 'stack_region', None):
+                    sr = self.stack_region
+                    stack_crop = frame[sr['top']:sr['top']+sr['height'], sr['left']:sr['left']+sr['width']]
+                    stack_crop = self._preprocess_number_crop(stack_crop)
+                    stack_results = self.ocr_reader.readtext(stack_crop, allowlist='0123456789.,')
+                    if stack_results:
+                        raw_stack = ''.join([r[1] for r in stack_results])
+                        cleaned_stack = re.sub(r'[^0-9.]', '', raw_stack.replace(',', ''))
+                        if cleaned_stack:
+                            visual_stack = cleaned_stack
                 if visual_stack is not None:
                     parsed['stack'] = visual_stack
                 if hero_cards:
@@ -589,15 +600,32 @@ class OverlayEngine:
             cards.append(f"{match['rank']}{suit}")
         return cards
 
+    def _preprocess_number_crop(self, img):
+        """Upscale and threshold a number crop for better OCR accuracy."""
+        img = cv2.resize(img, None, fx=3, fy=3, interpolation=cv2.INTER_CUBIC)
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) if len(img.shape) == 3 else img
+        _, thresh = cv2.threshold(gray, 150, 255, cv2.THRESH_BINARY)
+        return thresh
+
     def _clean_currency_value(self, raw_value: str):
         if not raw_value:
             return None
         cleaned = raw_value.strip()
         cleaned = cleaned.replace('$', '')
-        if cleaned.startswith('5') and ',' in cleaned:
-            candidate = cleaned[1:]
-            if re.match(r'^\d{1,3}(,\d{3})*(\.\d{1,2})?$', candidate):
-                cleaned = candidate
+        # Fix $ → 5 OCR misread: if starts with '5' and remaining looks like a valid amount
+        # that would be unreasonably large with the leading 5, strip it
+        if cleaned.startswith('5') and len(cleaned) >= 4:
+            candidate = cleaned[1:].replace(',', '')
+            candidate_clean = re.sub(r'[^0-9.]', '', candidate)
+            if candidate_clean and candidate_clean[0].isdigit():
+                # If keeping the 5 makes it 10x larger than without, it's likely a misread
+                try:
+                    with_5 = float(re.sub(r'[^0-9.]', '', cleaned.replace(',', '')))
+                    without_5 = float(candidate_clean)
+                    if with_5 > 1000 and without_5 < 1000:
+                        cleaned = cleaned[1:]
+                except ValueError:
+                    pass
         cleaned = cleaned.replace(',', '')
         cleaned = re.sub(r'[^0-9.]', '', cleaned)
         if cleaned.count('.') > 1:

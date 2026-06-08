@@ -1,4 +1,0 @@
-session_id,timestamp,game_id,hand_num,street,hero_cards,board,hero_position,pot_size,amount_to_call,stack,equity_pct,pot_odds_pct,ev_pct,decision,opp_vpip,opp_pfr,opp_af,result_dollars,result_bb,showdown_seen,stack_start,stack_end
-007029cb,2026-06-08T19:51:20,,1,FLOP,4s 3d,9h Ah Qd,BB,5438.0,188.0,5602,12.95,3.34,9.61,Fold,,,,,,,,
-007029cb,2026-06-08T19:51:20,,1,FLOP,4s 3d,9h Ah Qd,BB,5438.0,188.0,5602,14.15,3.34,10.81,Call,,,,,,,,
-007029cb,2026-06-08T19:51:34,,1,TURN,4s 3d,9h Ah Qd 6c,BB,1221.0,407.0,5414,5.65,25.0,-19.35,Call,,,,,,,,
