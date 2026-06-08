@@ -33,6 +33,8 @@ OCR_KEYS = {
     'hero_turn': re.compile(r'(Your\s+Turn|Hero\s+to\s+act|Action\s*[:\s]*You)', re.IGNORECASE)
 }
 
+BET_INPUT_COORD = (-1030, 660)
+
 class OverlayEngine:
     def __init__(self):
         self.root = tk.Tk()
@@ -244,6 +246,9 @@ class OverlayEngine:
 
                     # Bet sizing labels commonly displayed on poker clients
                     sizing_map = {
+                        '1/3': 'raise_third',
+                        '1/3 pot': 'raise_third',
+                        'third': 'raise_third',
                         '1/2': 'raise_half',
                         '1/2 pot': 'raise_half',
                         'half': 'raise_half',
@@ -865,6 +870,7 @@ class OverlayEngine:
                 equity_pct=0.0,
                 decision=final_action,
             )
+            self.safe_execute_decision(final_action, pot_size=pot_size or 0.0)
             return
 
         # ---------- POSTFLOP ----------
@@ -921,10 +927,52 @@ class OverlayEngine:
             equity_pct=equity,
             decision=final_action,
         )
+        self.safe_execute_decision(final_action, pot_size=pot_size or 0.0)
 
-    def safe_execute_decision(self, x: int, y: int) -> bool:
-        print(f"DRY RUN - WOULD CLICK: {x}, {y}")
-        return True # self.ghost.execute_move(x, y)
+    def safe_execute_decision(self, action: str, pot_size: float = 0.0) -> bool:
+        with self.ocr_lock:
+            buttons = dict(self.button_coords)
+
+        action_lower = (action or '').strip().lower()
+
+        if action_lower in {'raise_third', 'raise_half', 'raise_pot'}:
+            raise_coord = buttons.get('raise')
+            if not raise_coord:
+                print(f"DRY RUN - NO RAISE BUTTON FOUND FOR ACTION: {action}")
+                return False
+            sizing_map = {
+                'raise_third': pot_size / 3.0,
+                'raise_half': pot_size / 2.0,
+                'raise_pot': pot_size,
+            }
+            amount = sizing_map.get(action_lower, 0.0)
+            print(
+                f"DRY RUN - WOULD EXECUTE SIZED RAISE: action={action_lower} "
+                f"amount={amount:.2f} raise_button={raise_coord} bet_input={BET_INPUT_COORD}"
+            )
+            # self.ghost.execute_sized_raise(BET_INPUT_COORD, amount, raise_coord)
+            return True
+
+        if action_lower in {'raise_allin', 'allin'}:
+            target_coord = buttons.get('raise_allin') or buttons.get('raise')
+            if not target_coord:
+                print(f"DRY RUN - NO ALL-IN TARGET FOUND FOR ACTION: {action}")
+                return False
+            print(f"DRY RUN - WOULD CLICK ALL-IN ACTION: {target_coord}")
+            # self.ghost.click(*target_coord)
+            return True
+
+        if action_lower in {'fold', 'call', 'check'}:
+            target_coord = buttons.get(action_lower)
+            if not target_coord:
+                print(f"DRY RUN - NO BUTTON FOUND FOR ACTION: {action}")
+                return False
+            print(f"DRY RUN - WOULD CLICK {action_lower.upper()}: {target_coord}")
+            # self.ghost.click(*target_coord)
+            return True
+
+        print(f"DRY RUN - NO HANDLER FOR ACTION: {action}")
+        return False
 
     def run(self) -> None:
         try:
