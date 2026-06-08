@@ -309,6 +309,8 @@ class OverlayEngine:
                         self._last_dealer_seat = dealer_seat
 
                 text_blob = '\n'.join(text_lines)
+                if 'game' in text_blob.lower() or 'started' in text_blob.lower():
+                    print(f'[OCR RAW GAME] {text_blob[:300]}')
                 current_game_id = self.last_known.get('game_id')
                 if self._showdown_recorded_for != current_game_id:
                     wins_match = HERO_WINS_RE.search(text_blob)
