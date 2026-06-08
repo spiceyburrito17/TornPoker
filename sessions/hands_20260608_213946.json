@@ -1,0 +1,1697 @@
+[
+  {
+    "session_id": "b4887478",
+    "hand_num": 1,
+    "game_id": "720518d5d97c54122666ed5c9b0168",
+    "started_at": 1780920677.2369652,
+    "hero_cards": [
+      "4s",
+      "6c"
+    ],
+    "board": [
+      "7h",
+      "Kd",
+      "6c",
+      "3c",
+      "9c"
+    ],
+    "decisions": [
+      {
+        "session_id": "b4887478",
+        "timestamp": "2026-06-08T21:41:17",
+        "game_id": "720518d5d97c54122666ed5c9b0168",
+        "hand_num": 1,
+        "street": "RIVER",
+        "hero_cards": [
+          "4s",
+          "6c"
+        ],
+        "board": [
+          "7h",
+          "Kd",
+          "6c",
+          "3c",
+          "9c"
+        ],
+        "hero_position": "CO",
+        "pot_size": 100.0,
+        "amount_to_call": 0.0,
+        "stack": "59950",
+        "equity_pct": 35.6,
+        "pot_odds_pct": 0.0,
+        "ev_pct": "",
+        "decision": "Fold",
+        "opp_vpip": "",
+        "opp_pfr": "",
+        "opp_af": "",
+        "result_dollars": "",
+        "result_bb": "",
+        "showdown_seen": "",
+        "stack_start": "",
+        "stack_end": ""
+      }
+    ],
+    "result_dollars": 0.0,
+    "result_bb": 0.0,
+    "showdown_seen": false,
+    "stack_start": 59950.0,
+    "stack_end": 59950.0,
+    "ended_at": 1780920680.7270386
+  },
+  {
+    "session_id": "b4887478",
+    "hand_num": 2,
+    "game_id": null,
+    "started_at": 1780920680.7280443,
+    "hero_cards": [
+      "4s",
+      "6c"
+    ],
+    "board": [
+      "Ts",
+      "Qh",
+      "Jc",
+      "Kc"
+    ],
+    "decisions": [
+      {
+        "session_id": "b4887478",
+        "timestamp": "2026-06-08T21:41:20",
+        "game_id": "",
+        "hand_num": 2,
+        "street": "FLOP",
+        "hero_cards": [
+          "4s",
+          "6c"
+        ],
+        "board": [
+          "Ts",
+          "Qh",
+          "Jc"
+        ],
+        "hero_position": "CO",
+        "pot_size": 100.0,
+        "amount_to_call": 0.0,
+        "stack": "59950",
+        "equity_pct": 13.55,
+        "pot_odds_pct": 0.0,
+        "ev_pct": "",
+        "decision": "Check",
+        "opp_vpip": "",
+        "opp_pfr": "",
+        "opp_af": "",
+        "result_dollars": "",
+        "result_bb": "",
+        "showdown_seen": "",
+        "stack_start": "",
+        "stack_end": ""
+      },
+      {
+        "session_id": "b4887478",
+        "timestamp": "2026-06-08T21:41:27",
+        "game_id": "",
+        "hand_num": 2,
+        "street": "TURN",
+        "hero_cards": [
+          "4s",
+          "6c"
+        ],
+        "board": [
+          "Ts",
+          "Qh",
+          "Jc",
+          "Kc"
+        ],
+        "hero_position": "CO",
+        "pot_size": 100.0,
+        "amount_to_call": 0.0,
+        "stack": "59950",
+        "equity_pct": 13.4,
+        "pot_odds_pct": 0.0,
+        "ev_pct": "",
+        "decision": "Check",
+        "opp_vpip": "",
+        "opp_pfr": "",
+        "opp_af": "",
+        "result_dollars": "",
+        "result_bb": "",
+        "showdown_seen": "",
+        "stack_start": "",
+        "stack_end": ""
+      }
+    ],
+    "result_dollars": 0.0,
+    "result_bb": 0.0,
+    "showdown_seen": false,
+    "stack_start": 59950.0,
+    "stack_end": 59950.0,
+    "ended_at": 1780920699.9488683
+  },
+  {
+    "session_id": "b4887478",
+    "hand_num": 3,
+    "game_id": "79cb7d178060079e69a4e6c3a33304",
+    "started_at": 1780920699.9493728,
+    "hero_cards": [
+      "7d",
+      "8c"
+    ],
+    "board": [
+      "Ts",
+      "Qh",
+      "Jc",
+      "Kc",
+      "9d"
+    ],
+    "decisions": [
+      {
+        "session_id": "b4887478",
+        "timestamp": "2026-06-08T21:41:39",
+        "game_id": "79cb7d178060079e69a4e6c3a33304",
+        "hand_num": 3,
+        "street": "RIVER",
+        "hero_cards": [
+          "7d",
+          "8c"
+        ],
+        "board": [
+          "Ts",
+          "Qh",
+          "Jc",
+          "Kc",
+          "9d"
+        ],
+        "hero_position": "UTG",
+        "pot_size": 125.0,
+        "amount_to_call": 25.0,
+        "stack": "510025",
+        "equity_pct": 41.75,
+        "pot_odds_pct": 16.67,
+        "ev_pct": 25.08,
+        "decision": "Call",
+        "opp_vpip": "",
+        "opp_pfr": "",
+        "opp_af": "",
+        "result_dollars": "",
+        "result_bb": "",
+        "showdown_seen": "",
+        "stack_start": "",
+        "stack_end": ""
+      }
+    ],
+    "result_dollars": 0.0,
+    "result_bb": 0.0,
+    "showdown_seen": false,
+    "stack_start": 510025.0,
+    "stack_end": 510025.0,
+    "ended_at": 1780920714.6593354
+  },
+  {
+    "session_id": "b4887478",
+    "hand_num": 4,
+    "game_id": null,
+    "started_at": 1780920714.6603377,
+    "hero_cards": [
+      "7d",
+      "8c"
+    ],
+    "board": [
+      "Js",
+      "Qs",
+      "5h"
+    ],
+    "decisions": [
+      {
+        "session_id": "b4887478",
+        "timestamp": "2026-06-08T21:41:54",
+        "game_id": "",
+        "hand_num": 4,
+        "street": "RIVER",
+        "hero_cards": [
+          "7d",
+          "8c"
+        ],
+        "board": [
+          "Ts",
+          "Qh",
+          "Jc",
+          "Kc",
+          "9d"
+        ],
+        "hero_position": "UTG",
+        "pot_size": 550.0,
+        "amount_to_call": 200.0,
+        "stack": "510000",
+        "equity_pct": 40.55,
+        "pot_odds_pct": 26.67,
+        "ev_pct": 13.88,
+        "decision": "Fold",
+        "opp_vpip": "",
+        "opp_pfr": "",
+        "opp_af": "",
+        "result_dollars": "",
+        "result_bb": "",
+        "showdown_seen": "",
+        "stack_start": "",
+        "stack_end": ""
+      },
+      {
+        "session_id": "b4887478",
+        "timestamp": "2026-06-08T21:41:56",
+        "game_id": "",
+        "hand_num": 4,
+        "street": "PREFLOP",
+        "hero_cards": [
+          "7d",
+          "8c"
+        ],
+        "board": [],
+        "hero_position": "UTG",
+        "pot_size": 750.0,
+        "amount_to_call": 200.0,
+        "stack": "59800",
+        "equity_pct": 0.0,
+        "pot_odds_pct": 21.05,
+        "ev_pct": -21.05,
+        "decision": "Fold",
+        "opp_vpip": "",
+        "opp_pfr": "",
+        "opp_af": "",
+        "result_dollars": "",
+        "result_bb": "",
+        "showdown_seen": "",
+        "stack_start": "",
+        "stack_end": ""
+      },
+      {
+        "session_id": "b4887478",
+        "timestamp": "2026-06-08T21:41:57",
+        "game_id": "",
+        "hand_num": 4,
+        "street": "FLOP",
+        "hero_cards": [
+          "7d",
+          "8c"
+        ],
+        "board": [
+          "Js",
+          "Qs",
+          "5h"
+        ],
+        "hero_position": "UTG",
+        "pot_size": 750.0,
+        "amount_to_call": 200.0,
+        "stack": "59800",
+        "equity_pct": 21.26,
+        "pot_odds_pct": 21.05,
+        "ev_pct": 0.21,
+        "decision": "Call",
+        "opp_vpip": "",
+        "opp_pfr": "",
+        "opp_af": "",
+        "result_dollars": "",
+        "result_bb": "",
+        "showdown_seen": "",
+        "stack_start": "",
+        "stack_end": ""
+      }
+    ],
+    "result_dollars": -450200.0,
+    "result_bb": -22510.0,
+    "showdown_seen": false,
+    "stack_start": 510000.0,
+    "stack_end": 59800.0,
+    "ended_at": 1780920751.9703462
+  },
+  {
+    "session_id": "b4887478",
+    "hand_num": 5,
+    "game_id": "e372fdb50c76c175044f99e9c13839",
+    "started_at": 1780920751.971371,
+    "hero_cards": [
+      "Th",
+      "Ts"
+    ],
+    "board": [
+      "Js",
+      "Qs",
+      "5h",
+      "Qh",
+      "8d"
+    ],
+    "decisions": [
+      {
+        "session_id": "b4887478",
+        "timestamp": "2026-06-08T21:42:31",
+        "game_id": "e372fdb50c76c175044f99e9c13839",
+        "hand_num": 5,
+        "street": "RIVER",
+        "hero_cards": [
+          "Th",
+          "Ts"
+        ],
+        "board": [
+          "Js",
+          "Qs",
+          "5h",
+          "Qh",
+          "8d"
+        ],
+        "hero_position": "BTN",
+        "pot_size": 575.0,
+        "amount_to_call": 50.0,
+        "stack": "59800",
+        "equity_pct": 68.95,
+        "pot_odds_pct": 8.0,
+        "ev_pct": 60.95,
+        "decision": "Raise_Pot",
+        "opp_vpip": "",
+        "opp_pfr": "",
+        "opp_af": "",
+        "result_dollars": "",
+        "result_bb": "",
+        "showdown_seen": "",
+        "stack_start": "",
+        "stack_end": ""
+      }
+    ],
+    "result_dollars": 0.0,
+    "result_bb": 0.0,
+    "showdown_seen": false,
+    "stack_start": 59800.0,
+    "stack_end": 59800.0,
+    "ended_at": 1780920768.3820763
+  },
+  {
+    "session_id": "b4887478",
+    "hand_num": 6,
+    "game_id": null,
+    "started_at": 1780920768.3831813,
+    "hero_cards": [
+      "Kc",
+      "Kh"
+    ],
+    "board": [
+      "4d",
+      "5c",
+      "Qc",
+      "2s",
+      "3h"
+    ],
+    "decisions": [
+      {
+        "session_id": "b4887478",
+        "timestamp": "2026-06-08T21:42:48",
+        "game_id": "",
+        "hand_num": 6,
+        "street": "FLOP",
+        "hero_cards": [
+          "Th",
+          "Ts"
+        ],
+        "board": [
+          "6h",
+          "Ac",
+          "2d"
+        ],
+        "hero_position": "BTN",
+        "pot_size": 150.0,
+        "amount_to_call": 50.0,
+        "stack": "59750",
+        "equity_pct": 70.4,
+        "pot_odds_pct": 25.0,
+        "ev_pct": 45.4,
+        "decision": "Call",
+        "opp_vpip": "",
+        "opp_pfr": "",
+        "opp_af": "",
+        "result_dollars": "",
+        "result_bb": "",
+        "showdown_seen": "",
+        "stack_start": "",
+        "stack_end": ""
+      },
+      {
+        "session_id": "b4887478",
+        "timestamp": "2026-06-08T21:42:53",
+        "game_id": "",
+        "hand_num": 6,
+        "street": "TURN",
+        "hero_cards": [
+          "Th",
+          "Ts"
+        ],
+        "board": [
+          "6h",
+          "Ac",
+          "2d",
+          "3h"
+        ],
+        "hero_position": "BTN",
+        "pot_size": 150.0,
+        "amount_to_call": 50.0,
+        "stack": "59750",
+        "equity_pct": 69.6,
+        "pot_odds_pct": 25.0,
+        "ev_pct": 44.6,
+        "decision": "Raise_Half",
+        "opp_vpip": "",
+        "opp_pfr": "",
+        "opp_af": "",
+        "result_dollars": "",
+        "result_bb": "",
+        "showdown_seen": "",
+        "stack_start": "",
+        "stack_end": ""
+      },
+      {
+        "session_id": "b4887478",
+        "timestamp": "2026-06-08T21:43:00",
+        "game_id": "",
+        "hand_num": 6,
+        "street": "RIVER",
+        "hero_cards": [
+          "Th",
+          "Ts"
+        ],
+        "board": [
+          "6h",
+          "Ac",
+          "2d",
+          "3h",
+          "5c"
+        ],
+        "hero_position": "BTN",
+        "pot_size": 400.0,
+        "amount_to_call": 250.0,
+        "stack": "59750",
+        "equity_pct": 63.6,
+        "pot_odds_pct": 38.46,
+        "ev_pct": 25.14,
+        "decision": "Raise_Half",
+        "opp_vpip": "",
+        "opp_pfr": "",
+        "opp_af": "",
+        "result_dollars": "",
+        "result_bb": "",
+        "showdown_seen": "",
+        "stack_start": "",
+        "stack_end": ""
+      },
+      {
+        "session_id": "b4887478",
+        "timestamp": "2026-06-08T21:43:17",
+        "game_id": "",
+        "hand_num": 6,
+        "street": "FLOP",
+        "hero_cards": [
+          "Kc",
+          "Kh"
+        ],
+        "board": [
+          "4d",
+          "5c",
+          "Qc"
+        ],
+        "hero_position": "CO",
+        "pot_size": 100.0,
+        "amount_to_call": 250.0,
+        "stack": "59450",
+        "equity_pct": 79.15,
+        "pot_odds_pct": 71.43,
+        "ev_pct": 7.72,
+        "decision": "Call",
+        "opp_vpip": "",
+        "opp_pfr": "",
+        "opp_af": "",
+        "result_dollars": "",
+        "result_bb": "",
+        "showdown_seen": "",
+        "stack_start": "",
+        "stack_end": ""
+      },
+      {
+        "session_id": "b4887478",
+        "timestamp": "2026-06-08T21:43:22",
+        "game_id": "",
+        "hand_num": 6,
+        "street": "TURN",
+        "hero_cards": [
+          "Kc",
+          "Kh"
+        ],
+        "board": [
+          "4d",
+          "5c",
+          "Qc",
+          "2s"
+        ],
+        "hero_position": "CO",
+        "pot_size": 100.0,
+        "amount_to_call": 250.0,
+        "stack": "59450",
+        "equity_pct": 78.7,
+        "pot_odds_pct": 71.43,
+        "ev_pct": 7.27,
+        "decision": "Call",
+        "opp_vpip": "",
+        "opp_pfr": "",
+        "opp_af": "",
+        "result_dollars": "",
+        "result_bb": "",
+        "showdown_seen": "",
+        "stack_start": "",
+        "stack_end": ""
+      },
+      {
+        "session_id": "b4887478",
+        "timestamp": "2026-06-08T21:43:32",
+        "game_id": "",
+        "hand_num": 6,
+        "street": "RIVER",
+        "hero_cards": [
+          "Kc",
+          "Kh"
+        ],
+        "board": [
+          "4d",
+          "5c",
+          "Qc",
+          "2s",
+          "3h"
+        ],
+        "hero_position": "CO",
+        "pot_size": 300.0,
+        "amount_to_call": 200.0,
+        "stack": "59450",
+        "equity_pct": 58.5,
+        "pot_odds_pct": 40.0,
+        "ev_pct": 18.5,
+        "decision": "Call",
+        "opp_vpip": "",
+        "opp_pfr": "",
+        "opp_af": "",
+        "result_dollars": "",
+        "result_bb": "",
+        "showdown_seen": "",
+        "stack_start": "",
+        "stack_end": ""
+      }
+    ],
+    "result_dollars": -300.0,
+    "result_bb": -15.0,
+    "showdown_seen": false,
+    "stack_start": 59750.0,
+    "stack_end": 59450.0,
+    "ended_at": 1780920821.8030798
+  },
+  {
+    "session_id": "b4887478",
+    "hand_num": 7,
+    "game_id": "ef90dUc952347e98113a39a6a305bc",
+    "started_at": 1780920821.805121,
+    "hero_cards": [
+      "Kd",
+      "7s"
+    ],
+    "board": [
+      "4d",
+      "5c",
+      "Qc",
+      "2s",
+      "3h"
+    ],
+    "decisions": [
+      {
+        "session_id": "b4887478",
+        "timestamp": "2026-06-08T21:43:41",
+        "game_id": "ef90dUc952347e98113a39a6a305bc",
+        "hand_num": 7,
+        "street": "RIVER",
+        "hero_cards": [
+          "Kd",
+          "7s"
+        ],
+        "board": [
+          "4d",
+          "5c",
+          "Qc",
+          "2s",
+          "3h"
+        ],
+        "hero_position": "UTG",
+        "pot_size": 125.0,
+        "amount_to_call": 25.0,
+        "stack": "59225",
+        "equity_pct": 13.26,
+        "pot_odds_pct": 16.67,
+        "ev_pct": -3.41,
+        "decision": "Fold",
+        "opp_vpip": "",
+        "opp_pfr": "",
+        "opp_af": "",
+        "result_dollars": "",
+        "result_bb": "",
+        "showdown_seen": "",
+        "stack_start": "",
+        "stack_end": ""
+      }
+    ],
+    "result_dollars": 0.0,
+    "result_bb": 0.0,
+    "showdown_seen": false,
+    "stack_start": 59225.0,
+    "stack_end": 59225.0,
+    "ended_at": 1780920824.5202284
+  },
+  {
+    "session_id": "b4887478",
+    "hand_num": 8,
+    "game_id": null,
+    "started_at": 1780920824.5212579,
+    "hero_cards": [
+      "Kd",
+      "7s"
+    ],
+    "board": [
+      "5s",
+      "Qs",
+      "4h",
+      "Kc",
+      "3h"
+    ],
+    "decisions": [
+      {
+        "session_id": "b4887478",
+        "timestamp": "2026-06-08T21:43:44",
+        "game_id": "",
+        "hand_num": 8,
+        "street": "RIVER",
+        "hero_cards": [
+          "Kd",
+          "7s"
+        ],
+        "board": [
+          "4d",
+          "5c",
+          "Qc",
+          "2s",
+          "3h"
+        ],
+        "hero_position": "UTG",
+        "pot_size": 150.0,
+        "amount_to_call": 25.0,
+        "stack": "59200",
+        "equity_pct": 13.11,
+        "pot_odds_pct": 14.29,
+        "ev_pct": -1.18,
+        "decision": "Fold",
+        "opp_vpip": "",
+        "opp_pfr": "",
+        "opp_af": "",
+        "result_dollars": "",
+        "result_bb": "",
+        "showdown_seen": "",
+        "stack_start": "",
+        "stack_end": ""
+      },
+      {
+        "session_id": "b4887478",
+        "timestamp": "2026-06-08T21:43:45",
+        "game_id": "",
+        "hand_num": 8,
+        "street": "PREFLOP",
+        "hero_cards": [
+          "Kd",
+          "7s"
+        ],
+        "board": [],
+        "hero_position": "UTG",
+        "pot_size": 150.0,
+        "amount_to_call": 25.0,
+        "stack": "59200",
+        "equity_pct": 0.0,
+        "pot_odds_pct": 14.29,
+        "ev_pct": -14.29,
+        "decision": "Fold",
+        "opp_vpip": "",
+        "opp_pfr": "",
+        "opp_af": "",
+        "result_dollars": "",
+        "result_bb": "",
+        "showdown_seen": "",
+        "stack_start": "",
+        "stack_end": ""
+      },
+      {
+        "session_id": "b4887478",
+        "timestamp": "2026-06-08T21:43:45",
+        "game_id": "",
+        "hand_num": 8,
+        "street": "FLOP",
+        "hero_cards": [
+          "Kd",
+          "7s"
+        ],
+        "board": [
+          "5s",
+          "Qs",
+          "4h"
+        ],
+        "hero_position": "UTG",
+        "pot_size": 150.0,
+        "amount_to_call": 25.0,
+        "stack": "59200",
+        "equity_pct": 37.55,
+        "pot_odds_pct": 14.29,
+        "ev_pct": 23.26,
+        "decision": "Call",
+        "opp_vpip": "",
+        "opp_pfr": "",
+        "opp_af": "",
+        "result_dollars": "",
+        "result_bb": "",
+        "showdown_seen": "",
+        "stack_start": "",
+        "stack_end": ""
+      },
+      {
+        "session_id": "b4887478",
+        "timestamp": "2026-06-08T21:43:50",
+        "game_id": "",
+        "hand_num": 8,
+        "street": "TURN",
+        "hero_cards": [
+          "Kd",
+          "7s"
+        ],
+        "board": [
+          "5s",
+          "Qs",
+          "4h",
+          "Kc"
+        ],
+        "hero_position": "UTG",
+        "pot_size": 150.0,
+        "amount_to_call": 25.0,
+        "stack": "59200",
+        "equity_pct": 82.2,
+        "pot_odds_pct": 14.29,
+        "ev_pct": 67.91,
+        "decision": "Raise_Half",
+        "opp_vpip": "",
+        "opp_pfr": "",
+        "opp_af": "",
+        "result_dollars": "",
+        "result_bb": "",
+        "showdown_seen": "",
+        "stack_start": "",
+        "stack_end": ""
+      },
+      {
+        "session_id": "b4887478",
+        "timestamp": "2026-06-08T21:43:58",
+        "game_id": "",
+        "hand_num": 8,
+        "street": "RIVER",
+        "hero_cards": [
+          "Kd",
+          "7s"
+        ],
+        "board": [
+          "5s",
+          "Qs",
+          "4h",
+          "Kc",
+          "3h"
+        ],
+        "hero_position": "UTG",
+        "pot_size": 150.0,
+        "amount_to_call": 25.0,
+        "stack": "59200",
+        "equity_pct": 80.5,
+        "pot_odds_pct": 14.29,
+        "ev_pct": 66.21,
+        "decision": "Call",
+        "opp_vpip": "",
+        "opp_pfr": "",
+        "opp_af": "",
+        "result_dollars": "",
+        "result_bb": "",
+        "showdown_seen": "",
+        "stack_start": "",
+        "stack_end": ""
+      }
+    ],
+    "result_dollars": 0.0,
+    "result_bb": 0.0,
+    "showdown_seen": false,
+    "stack_start": 59200.0,
+    "stack_end": 59200.0,
+    "ended_at": 1780920850.730947
+  },
+  {
+    "session_id": "b4887478",
+    "hand_num": 9,
+    "game_id": "daedcIdOZaabef5szalabe14d58920",
+    "started_at": 1780920850.732205,
+    "hero_cards": [
+      "9h",
+      "8d"
+    ],
+    "board": [
+      "5s",
+      "Qs",
+      "4h",
+      "Kc",
+      "3h"
+    ],
+    "decisions": [
+      {
+        "session_id": "b4887478",
+        "timestamp": "2026-06-08T21:44:10",
+        "game_id": "daedcIdOZaabef5szalabe14d58920",
+        "hand_num": 9,
+        "street": "RIVER",
+        "hero_cards": [
+          "9h",
+          "8d"
+        ],
+        "board": [
+          "5s",
+          "Qs",
+          "4h",
+          "Kc",
+          "3h"
+        ],
+        "hero_position": "BTN",
+        "pot_size": 575.0,
+        "amount_to_call": 50.0,
+        "stack": "59350",
+        "equity_pct": 8.35,
+        "pot_odds_pct": 8.0,
+        "ev_pct": 0.35,
+        "decision": "Call",
+        "opp_vpip": "",
+        "opp_pfr": "",
+        "opp_af": "",
+        "result_dollars": "",
+        "result_bb": "",
+        "showdown_seen": "",
+        "stack_start": "",
+        "stack_end": ""
+      }
+    ],
+    "result_dollars": 0.0,
+    "result_bb": 0.0,
+    "showdown_seen": false,
+    "stack_start": 59350.0,
+    "stack_end": 59350.0,
+    "ended_at": 1780920882.2901917
+  },
+  {
+    "session_id": "b4887478",
+    "hand_num": 10,
+    "game_id": null,
+    "started_at": 1780920882.2916958,
+    "hero_cards": [
+      "5h",
+      "6c"
+    ],
+    "board": [
+      "Ad",
+      "Qc",
+      "6s",
+      "Jc",
+      "Th"
+    ],
+    "decisions": [
+      {
+        "session_id": "b4887478",
+        "timestamp": "2026-06-08T21:44:42",
+        "game_id": "",
+        "hand_num": 10,
+        "street": "FLOP",
+        "hero_cards": [
+          "As",
+          "4s"
+        ],
+        "board": [
+          "Jc",
+          "9s",
+          "3s"
+        ],
+        "hero_position": "CO",
+        "pot_size": 150.0,
+        "amount_to_call": 50.0,
+        "stack": "593000",
+        "equity_pct": 62.35,
+        "pot_odds_pct": 25.0,
+        "ev_pct": 37.35,
+        "decision": "Call",
+        "opp_vpip": "",
+        "opp_pfr": "",
+        "opp_af": "",
+        "result_dollars": "",
+        "result_bb": "",
+        "showdown_seen": "",
+        "stack_start": "",
+        "stack_end": ""
+      },
+      {
+        "session_id": "b4887478",
+        "timestamp": "2026-06-08T21:45:00",
+        "game_id": "",
+        "hand_num": 10,
+        "street": "TURN",
+        "hero_cards": [
+          "As",
+          "4s"
+        ],
+        "board": [
+          "8s",
+          "Ts",
+          "7d",
+          "9h"
+        ],
+        "hero_position": "CO",
+        "pot_size": 450.0,
+        "amount_to_call": 150.0,
+        "stack": "59250",
+        "equity_pct": 37.8,
+        "pot_odds_pct": 25.0,
+        "ev_pct": 12.8,
+        "decision": "Call",
+        "opp_vpip": "",
+        "opp_pfr": "",
+        "opp_af": "",
+        "result_dollars": "",
+        "result_bb": "",
+        "showdown_seen": "",
+        "stack_start": "",
+        "stack_end": ""
+      },
+      {
+        "session_id": "b4887478",
+        "timestamp": "2026-06-08T21:45:10",
+        "game_id": "",
+        "hand_num": 10,
+        "street": "RIVER",
+        "hero_cards": [
+          "As",
+          "4s"
+        ],
+        "board": [
+          "8s",
+          "Ts",
+          "7d",
+          "9h",
+          "Th"
+        ],
+        "hero_position": "CO",
+        "pot_size": 800.0,
+        "amount_to_call": 200.0,
+        "stack": "59100",
+        "equity_pct": 14.25,
+        "pot_odds_pct": 20.0,
+        "ev_pct": -5.75,
+        "decision": "Call",
+        "opp_vpip": "",
+        "opp_pfr": "",
+        "opp_af": "",
+        "result_dollars": "",
+        "result_bb": "",
+        "showdown_seen": "",
+        "stack_start": "",
+        "stack_end": ""
+      },
+      {
+        "session_id": "b4887478",
+        "timestamp": "2026-06-08T21:45:30",
+        "game_id": "",
+        "hand_num": 10,
+        "street": "PREFLOP",
+        "hero_cards": [
+          "5h",
+          "6c"
+        ],
+        "board": [],
+        "hero_position": "UTG",
+        "pot_size": 150.0,
+        "amount_to_call": 25.0,
+        "stack": "58850",
+        "equity_pct": 0.0,
+        "pot_odds_pct": 14.29,
+        "ev_pct": -14.29,
+        "decision": "Fold",
+        "opp_vpip": "",
+        "opp_pfr": "",
+        "opp_af": "",
+        "result_dollars": "",
+        "result_bb": "",
+        "showdown_seen": "",
+        "stack_start": "",
+        "stack_end": ""
+      },
+      {
+        "session_id": "b4887478",
+        "timestamp": "2026-06-08T21:45:30",
+        "game_id": "",
+        "hand_num": 10,
+        "street": "FLOP",
+        "hero_cards": [
+          "5h",
+          "6c"
+        ],
+        "board": [
+          "Ad",
+          "Qc",
+          "6s"
+        ],
+        "hero_position": "UTG",
+        "pot_size": 150.0,
+        "amount_to_call": 25.0,
+        "stack": "58850",
+        "equity_pct": 55.55,
+        "pot_odds_pct": 14.29,
+        "ev_pct": 41.26,
+        "decision": "Call",
+        "opp_vpip": "",
+        "opp_pfr": "",
+        "opp_af": "",
+        "result_dollars": "",
+        "result_bb": "",
+        "showdown_seen": "",
+        "stack_start": "",
+        "stack_end": ""
+      },
+      {
+        "session_id": "b4887478",
+        "timestamp": "2026-06-08T21:45:37",
+        "game_id": "",
+        "hand_num": 10,
+        "street": "TURN",
+        "hero_cards": [
+          "5h",
+          "6c"
+        ],
+        "board": [
+          "Ad",
+          "Qc",
+          "6s",
+          "Jc"
+        ],
+        "hero_position": "UTG",
+        "pot_size": 150.0,
+        "amount_to_call": 25.0,
+        "stack": "58850",
+        "equity_pct": 47.8,
+        "pot_odds_pct": 14.29,
+        "ev_pct": 33.51,
+        "decision": "Call",
+        "opp_vpip": "",
+        "opp_pfr": "",
+        "opp_af": "",
+        "result_dollars": "",
+        "result_bb": "",
+        "showdown_seen": "",
+        "stack_start": "",
+        "stack_end": ""
+      },
+      {
+        "session_id": "b4887478",
+        "timestamp": "2026-06-08T21:45:46",
+        "game_id": "",
+        "hand_num": 10,
+        "street": "RIVER",
+        "hero_cards": [
+          "5h",
+          "6c"
+        ],
+        "board": [
+          "Ad",
+          "Qc",
+          "6s",
+          "Jc",
+          "Th"
+        ],
+        "hero_position": "UTG",
+        "pot_size": 150.0,
+        "amount_to_call": 25.0,
+        "stack": "58850",
+        "equity_pct": 29.3,
+        "pot_odds_pct": 14.29,
+        "ev_pct": 15.01,
+        "decision": "Fold",
+        "opp_vpip": "",
+        "opp_pfr": "",
+        "opp_af": "",
+        "result_dollars": "",
+        "result_bb": "",
+        "showdown_seen": "",
+        "stack_start": "",
+        "stack_end": ""
+      }
+    ],
+    "result_dollars": -534150.0,
+    "result_bb": -26707.5,
+    "showdown_seen": false,
+    "stack_start": 593000.0,
+    "stack_end": 58850.0,
+    "ended_at": 1780920964.4351513
+  },
+  {
+    "session_id": "b4887478",
+    "hand_num": 11,
+    "game_id": "89b07a5a63aea063e7121a110fd229",
+    "started_at": 1780920964.437203,
+    "hero_cards": [
+      "Qd",
+      "3s"
+    ],
+    "board": [
+      "Ad",
+      "Qc",
+      "6c",
+      "Jc",
+      "Th"
+    ],
+    "decisions": [
+      {
+        "session_id": "b4887478",
+        "timestamp": "2026-06-08T21:46:04",
+        "game_id": "89b07a5a63aea063e7121a110fd229",
+        "hand_num": 11,
+        "street": "RIVER",
+        "hero_cards": [
+          "Qd",
+          "3s"
+        ],
+        "board": [
+          "Ad",
+          "Qc",
+          "6c",
+          "Jc",
+          "Th"
+        ],
+        "hero_position": "BTN",
+        "pot_size": 575.0,
+        "amount_to_call": 50.0,
+        "stack": "58850",
+        "equity_pct": 50.65,
+        "pot_odds_pct": 8.0,
+        "ev_pct": 42.65,
+        "decision": "Call",
+        "opp_vpip": "",
+        "opp_pfr": "",
+        "opp_af": "",
+        "result_dollars": "",
+        "result_bb": "",
+        "showdown_seen": "",
+        "stack_start": "",
+        "stack_end": ""
+      }
+    ],
+    "result_dollars": 0.0,
+    "result_bb": 0.0,
+    "showdown_seen": false,
+    "stack_start": 58850.0,
+    "stack_end": 58850.0,
+    "ended_at": 1780920992.513152
+  },
+  {
+    "session_id": "b4887478",
+    "hand_num": 12,
+    "game_id": "23bfc52477e5a7d75841030412094c",
+    "started_at": 1780920992.5147405,
+    "hero_cards": [
+      "As",
+      "Kd"
+    ],
+    "board": [
+      "9s",
+      "8s",
+      "Kh",
+      "As"
+    ],
+    "decisions": [
+      {
+        "session_id": "b4887478",
+        "timestamp": "2026-06-08T21:46:32",
+        "game_id": "23bfc52477e5a7d75841030412094c",
+        "hand_num": 12,
+        "street": "TURN",
+        "hero_cards": [
+          "As",
+          "Kd"
+        ],
+        "board": [
+          "9s",
+          "8s",
+          "Kh",
+          "As"
+        ],
+        "hero_position": "CO",
+        "pot_size": 100.0,
+        "amount_to_call": 50.0,
+        "stack": "58800",
+        "equity_pct": 62.15,
+        "pot_odds_pct": 33.33,
+        "ev_pct": 28.82,
+        "decision": "Call",
+        "opp_vpip": "",
+        "opp_pfr": "",
+        "opp_af": "",
+        "result_dollars": "",
+        "result_bb": "",
+        "showdown_seen": "",
+        "stack_start": "",
+        "stack_end": ""
+      }
+    ],
+    "result_dollars": 0.0,
+    "result_bb": 0.0,
+    "showdown_seen": false,
+    "stack_start": 58800.0,
+    "stack_end": 58800.0,
+    "ended_at": 1780920998.413826
+  },
+  {
+    "session_id": "b4887478",
+    "hand_num": 13,
+    "game_id": null,
+    "started_at": 1780920998.4158206,
+    "hero_cards": [
+      "As",
+      "Kd"
+    ],
+    "board": [
+      "2d",
+      "5d",
+      "Js",
+      "Tc"
+    ],
+    "decisions": [
+      {
+        "session_id": "b4887478",
+        "timestamp": "2026-06-08T21:46:38",
+        "game_id": "",
+        "hand_num": 13,
+        "street": "FLOP",
+        "hero_cards": [
+          "As",
+          "Kd"
+        ],
+        "board": [
+          "2d",
+          "5d",
+          "Js"
+        ],
+        "hero_position": "CO",
+        "pot_size": 100.0,
+        "amount_to_call": 50.0,
+        "stack": "58800",
+        "equity_pct": 50.5,
+        "pot_odds_pct": 33.33,
+        "ev_pct": 17.17,
+        "decision": "Call",
+        "opp_vpip": "",
+        "opp_pfr": "",
+        "opp_af": "",
+        "result_dollars": "",
+        "result_bb": "",
+        "showdown_seen": "",
+        "stack_start": "",
+        "stack_end": ""
+      },
+      {
+        "session_id": "b4887478",
+        "timestamp": "2026-06-08T21:46:46",
+        "game_id": "",
+        "hand_num": 13,
+        "street": "TURN",
+        "hero_cards": [
+          "As",
+          "Kd"
+        ],
+        "board": [
+          "2d",
+          "5d",
+          "Js",
+          "Tc"
+        ],
+        "hero_position": "CO",
+        "pot_size": 100.0,
+        "amount_to_call": 50.0,
+        "stack": "58800",
+        "equity_pct": 43.15,
+        "pot_odds_pct": 33.33,
+        "ev_pct": 9.82,
+        "decision": "Call",
+        "opp_vpip": "",
+        "opp_pfr": "",
+        "opp_af": "",
+        "result_dollars": "",
+        "result_bb": "",
+        "showdown_seen": "",
+        "stack_start": "",
+        "stack_end": ""
+      }
+    ],
+    "result_dollars": 0.0,
+    "result_bb": 0.0,
+    "showdown_seen": false,
+    "stack_start": 58800.0,
+    "stack_end": 58800.0,
+    "ended_at": 1780921028.7008781
+  },
+  {
+    "session_id": "b4887478",
+    "hand_num": 14,
+    "game_id": "ee3334dfd6756b38cd40362c9ad1e4",
+    "started_at": 1780921028.7025454,
+    "hero_cards": [
+      "Kd",
+      "6h"
+    ],
+    "board": [
+      "2d",
+      "5d",
+      "Js",
+      "Tc",
+      "9c"
+    ],
+    "decisions": [
+      {
+        "session_id": "b4887478",
+        "timestamp": "2026-06-08T21:47:08",
+        "game_id": "ee3334dfd6756b38cd40362c9ad1e4",
+        "hand_num": 14,
+        "street": "RIVER",
+        "hero_cards": [
+          "Kd",
+          "6h"
+        ],
+        "board": [
+          "2d",
+          "5d",
+          "Js",
+          "Tc",
+          "9c"
+        ],
+        "hero_position": "UTG",
+        "pot_size": 125.0,
+        "amount_to_call": 25.0,
+        "stack": "58925",
+        "equity_pct": 19.51,
+        "pot_odds_pct": 16.67,
+        "ev_pct": 2.84,
+        "decision": "Fold",
+        "opp_vpip": "",
+        "opp_pfr": "",
+        "opp_af": "",
+        "result_dollars": "",
+        "result_bb": "",
+        "showdown_seen": "",
+        "stack_start": "",
+        "stack_end": ""
+      }
+    ],
+    "result_dollars": 0.0,
+    "result_bb": 0.0,
+    "showdown_seen": false,
+    "stack_start": 58925.0,
+    "stack_end": 58925.0,
+    "ended_at": 1780921031.7571917
+  },
+  {
+    "session_id": "b4887478",
+    "hand_num": 15,
+    "game_id": null,
+    "started_at": 1780921031.759337,
+    "hero_cards": [
+      "Kd",
+      "6h"
+    ],
+    "board": [
+      "8s",
+      "8c",
+      "As",
+      "Qd",
+      "2h"
+    ],
+    "decisions": [
+      {
+        "session_id": "b4887478",
+        "timestamp": "2026-06-08T21:47:11",
+        "game_id": "",
+        "hand_num": 15,
+        "street": "PREFLOP",
+        "hero_cards": [
+          "Kd",
+          "6h"
+        ],
+        "board": [],
+        "hero_position": "UTG",
+        "pot_size": 150.0,
+        "amount_to_call": 25.0,
+        "stack": "58900",
+        "equity_pct": 0.0,
+        "pot_odds_pct": 14.29,
+        "ev_pct": -14.29,
+        "decision": "Fold",
+        "opp_vpip": "",
+        "opp_pfr": "",
+        "opp_af": "",
+        "result_dollars": "",
+        "result_bb": "",
+        "showdown_seen": "",
+        "stack_start": "",
+        "stack_end": ""
+      },
+      {
+        "session_id": "b4887478",
+        "timestamp": "2026-06-08T21:47:12",
+        "game_id": "",
+        "hand_num": 15,
+        "street": "FLOP",
+        "hero_cards": [
+          "Kd",
+          "6h"
+        ],
+        "board": [
+          "8s",
+          "8c",
+          "Ac"
+        ],
+        "hero_position": "UTG",
+        "pot_size": 150.0,
+        "amount_to_call": 25.0,
+        "stack": "58900",
+        "equity_pct": 41.85,
+        "pot_odds_pct": 14.29,
+        "ev_pct": 27.56,
+        "decision": "Fold",
+        "opp_vpip": "",
+        "opp_pfr": "",
+        "opp_af": "",
+        "result_dollars": "",
+        "result_bb": "",
+        "showdown_seen": "",
+        "stack_start": "",
+        "stack_end": ""
+      },
+      {
+        "session_id": "b4887478",
+        "timestamp": "2026-06-08T21:47:22",
+        "game_id": "",
+        "hand_num": 15,
+        "street": "TURN",
+        "hero_cards": [
+          "Kd",
+          "6h"
+        ],
+        "board": [
+          "8s",
+          "8c",
+          "As",
+          "Qd"
+        ],
+        "hero_position": "UTG",
+        "pot_size": 150.0,
+        "amount_to_call": 25.0,
+        "stack": "58900",
+        "equity_pct": 39.15,
+        "pot_odds_pct": 14.29,
+        "ev_pct": 24.86,
+        "decision": "Fold",
+        "opp_vpip": "",
+        "opp_pfr": "",
+        "opp_af": "",
+        "result_dollars": "",
+        "result_bb": "",
+        "showdown_seen": "",
+        "stack_start": "",
+        "stack_end": ""
+      },
+      {
+        "session_id": "b4887478",
+        "timestamp": "2026-06-08T21:47:30",
+        "game_id": "",
+        "hand_num": 15,
+        "street": "RIVER",
+        "hero_cards": [
+          "Kd",
+          "6h"
+        ],
+        "board": [
+          "8s",
+          "8c",
+          "As",
+          "Qd",
+          "2h"
+        ],
+        "hero_position": "UTG",
+        "pot_size": 150.0,
+        "amount_to_call": 25.0,
+        "stack": "58900",
+        "equity_pct": 40.1,
+        "pot_odds_pct": 14.29,
+        "ev_pct": 25.81,
+        "decision": "Call",
+        "opp_vpip": "",
+        "opp_pfr": "",
+        "opp_af": "",
+        "result_dollars": "",
+        "result_bb": "",
+        "showdown_seen": "",
+        "stack_start": "",
+        "stack_end": ""
+      }
+    ],
+    "result_dollars": 0.0,
+    "result_bb": 0.0,
+    "showdown_seen": false,
+    "stack_start": 58900.0,
+    "stack_end": 58900.0,
+    "ended_at": 1780921060.8700807
+  },
+  {
+    "session_id": "b4887478",
+    "hand_num": 16,
+    "game_id": "cb22dc282b84eeb55b266c43276715",
+    "started_at": 1780921060.8726897,
+    "hero_cards": [
+      "7c",
+      "2c"
+    ],
+    "board": [
+      "8s",
+      "8c",
+      "As",
+      "Qd",
+      "2h"
+    ],
+    "decisions": [
+      {
+        "session_id": "b4887478",
+        "timestamp": "2026-06-08T21:47:40",
+        "game_id": "cb22dc282b84eeb55b266c43276715",
+        "hand_num": 16,
+        "street": "RIVER",
+        "hero_cards": [
+          "7c",
+          "2c"
+        ],
+        "board": [
+          "8s",
+          "8c",
+          "As",
+          "Qd",
+          "2h"
+        ],
+        "hero_position": "BTN",
+        "pot_size": 575.0,
+        "amount_to_call": 50.0,
+        "stack": "58900",
+        "equity_pct": 48.2,
+        "pot_odds_pct": 8.0,
+        "ev_pct": 40.2,
+        "decision": "Call",
+        "opp_vpip": "",
+        "opp_pfr": "",
+        "opp_af": "",
+        "result_dollars": "",
+        "result_bb": "",
+        "showdown_seen": "",
+        "stack_start": "",
+        "stack_end": ""
+      }
+    ],
+    "result_dollars": 0.0,
+    "result_bb": 0.0,
+    "showdown_seen": false,
+    "stack_start": 58900.0,
+    "stack_end": 58900.0,
+    "ended_at": 1780921086.2026832
+  },
+  {
+    "session_id": "b4887478",
+    "hand_num": 17,
+    "game_id": "f978e671377867eOce44d36ec2311f",
+    "started_at": 1780921086.2047603,
+    "hero_cards": [
+      "4h",
+      "Qs"
+    ],
+    "board": [
+      "4d",
+      "8s",
+      "Qc",
+      "4c",
+      "2d"
+    ],
+    "decisions": [
+      {
+        "session_id": "b4887478",
+        "timestamp": "2026-06-08T21:48:06",
+        "game_id": "f978e671377867eOce44d36ec2311f",
+        "hand_num": 17,
+        "street": "RIVER",
+        "hero_cards": [
+          "4h",
+          "Qs"
+        ],
+        "board": [
+          "4d",
+          "8s",
+          "Qc",
+          "4c",
+          "2d"
+        ],
+        "hero_position": "CO",
+        "pot_size": 575.0,
+        "amount_to_call": 50.0,
+        "stack": "58900",
+        "equity_pct": 98.0,
+        "pot_odds_pct": 8.0,
+        "ev_pct": 90.0,
+        "decision": "Call",
+        "opp_vpip": "",
+        "opp_pfr": "",
+        "opp_af": "",
+        "result_dollars": "",
+        "result_bb": "",
+        "showdown_seen": "",
+        "stack_start": "",
+        "stack_end": ""
+      }
+    ],
+    "result_dollars": 0.0,
+    "result_bb": 0.0,
+    "showdown_seen": false,
+    "stack_start": 58900.0,
+    "stack_end": 58900.0,
+    "ended_at": 1780921115.0632498
+  }
+]
