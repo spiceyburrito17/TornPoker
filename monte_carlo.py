@@ -63,7 +63,8 @@ class MonteCarloSolver:
             if not isinstance(card, str) or len(card) < 2:
                 continue
             try:
-                normalized.append(Card.new(card.upper()))
+                # treys expects rank uppercase, suit lowercase (e.g. "Js" not "JS")
+                normalized.append(Card.new(card[0].upper() + card[1].lower()))
             except Exception:
                 continue
         return normalized

@@ -721,9 +721,11 @@ class OverlayEngine:
         if self.frame_index == 1 and frame_data.get('stack'):
             self.locked_stack = frame_data['stack']
         if frame_data.get('game_id') != self.last_known['game_id']:
-            if self.last_known['game_id'] is not None:
-                self.locked_stack = None
-            self.last_known['game_id'] = frame_data.get('game_id')
+            if frame_data.get('game_id'):
+                if self.last_known['game_id'] is not None:
+                    self.locked_stack = None
+                self.last_known['game_id'] = frame_data.get('game_id')
+            # else: keep existing game_id — OCR missed it this frame
 
     def _apply_log_bleed_protection(self, frame_data: dict) -> None:
         game_id = frame_data.get('game_id')
