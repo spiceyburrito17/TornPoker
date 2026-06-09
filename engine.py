@@ -712,7 +712,7 @@ class OverlayEngine:
 
             # Only act when the detected state has been stable for REQUIRED_STABLE_FRAMES
             if frame_data and self.stable_frames >= self.REQUIRED_STABLE_FRAMES:
-                hero_turn = frame_data.get('hero_turn', False)
+                hero_turn = frame_data.get('hero_turn', False) or bool(self.button_coords)
                 print(f"[TRIGGER] stable_frames={self.stable_frames} hero_turn={hero_turn} street={self.current_street.name} hero_cards={hero_cards}")
                 if hero_turn:
                     self._try_make_decision(hero_cards, board, stack, pot_size, amount_to_call)
@@ -827,11 +827,12 @@ class OverlayEngine:
         with self.ocr_lock:
             active_seats = getattr(self, '_last_active_seats', [0])
             dealer_seat  = getattr(self, '_last_dealer_seat', None)
+        pos_label = getattr(self, 'hero_position', 'Unknown')
         ip_label = 'IP' if self.tracker.is_hero_in_position(active_seats, dealer_seat) else 'OOP'
         lines.append(
             f'Equity: {equity_text} | PotOdds: {pot_odds_text} | MDF: {mdf_text}'
         )
-        lines.append(f'Pos: {ip_label}')
+        lines.append(f'Pos: {pos_label} ({ip_label})')
 
         # Show current recommendation prominently
         rec = getattr(self, 'current_recommendation', 'WAIT') or 'WAIT'
