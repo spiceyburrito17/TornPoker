@@ -836,9 +836,9 @@ class OverlayEngine:
 
         # Show current recommendation prominently
         rec = getattr(self, 'current_recommendation', 'WAIT') or 'WAIT'
-        ev = equity - pot_odds_pct if pot_odds_pct > 0 else None
-        ev_str = f' (EV: +{ev:.1f}%)' if ev and ev > 0 else (f' (EV: {ev:.1f}%)' if ev else '')
-        lines.append(f'>>> {rec}{ev_str} <<<')
+        edge = equity - pot_odds_pct if pot_odds_pct > 0 else None
+        edge_str = f' (Edge: +{edge:.1f}%)' if edge and edge > 0 else (f' (Edge: {edge:.1f}%)' if edge else '')
+        lines.append(f'>>> {rec}{edge_str} <<<')
 
         bb_100 = self.session_logger.get_bb_per_100()
         hands_count = len(self.session_logger._hands)
@@ -882,8 +882,8 @@ class OverlayEngine:
                 self.range_matrix.update_range_from_action(opp_id, action, pfr)
 
     def _try_make_decision(self, hero_cards, board, stack, pot_size, amount_to_call) -> None:
-        self.current_recommendation = 'WAIT'
         if not hero_cards:
+            self.current_recommendation = 'WAIT'
             return
 
         game_id = self.last_known.get('game_id')
@@ -891,18 +891,22 @@ class OverlayEngine:
             self.session_logger.start_hand(game_id)
             self._logger_game_id = game_id
 
-        amount_to_call = amount_to_call if amount_to_call is not None else 0.0
-        if amount_to_call == 0.0 and self.current_street != Street.PREFLOP:
-            # Free action — still evaluate bet vs check, don't auto-skip
-            pass
-
-        print(f'[DECISION] street={self.current_street.name} hero_cards={hero_cards} amt={amount_to_call} pot={pot_size}')
-
         # Deduplication — only log/act once per game+hand+street combination
         _decision_key = f"{game_id}_{self.session_logger._hand_num}_{self.current_street.name}"
         if _decision_key == getattr(self, '_last_logged_decision', None):
-            return  # already logged this decision
+            # Skip re-logging but keep existing recommendation
+            return
         self._last_logged_decision = _decision_key
+
+        # Now safe to reset -- first time deciding in this street
+        self.current_recommendation = 'WAIT'
+
+        amount_to_call = amount_to_call if amount_to_call is not None else 0.0
+        if amount_to_call == 0.0 and self.current_street != Street.PREFLOP:
+            # Free action -- still evaluate bet vs check, don't auto-skip
+            pass
+
+        print(f'[DECISION] street={self.current_street.name} hero_cards={hero_cards} amt={amount_to_call} pot={pot_size}')
 
         # ---------- PREFLOP ----------
         if self.current_street == Street.PREFLOP:
