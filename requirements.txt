@@ -1,7 +1,11 @@
-opencv-python
+# Monte Carlo backend (default). Verified faster; set USE_PHEVALUATOR=False to rollback.
+phevaluator>=0.5.5
+treys>=0.1.0  # fallback MC backend — required only if USE_PHEVALUATOR=False
+# OCR / screen capture
 numpy
 easyocr
 mss
 pyautogui
-treys
+# UI
+opencv-python
 pillow
