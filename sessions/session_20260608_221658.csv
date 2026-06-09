@@ -1,9 +1,0 @@
-session_id,timestamp,game_id,hand_num,street,hero_cards,board,hero_position,pot_size,amount_to_call,stack,equity_pct,pot_odds_pct,ev_pct,decision,opp_vpip,opp_pfr,opp_af,result_dollars,result_bb,showdown_seen,stack_start,stack_end
-7a96469d,2026-06-08T22:19:01,3630dac70044112ffe384e468ad58e,1,PREFLOP,Jh Jc,,UTG,525.0,0.0,55869,0.0,0.0,,Fold,,,,,,,,
-7a96469d,2026-06-08T22:19:37,,2,PREFLOP,Jh Jc,,UTG,70.0,10.0,55869,0.0,12.5,-12.5,Fold,,,,,,,,
-7a96469d,2026-06-08T22:19:49,,2,FLOP,Jh Jc,9s 2c Td,UTG,100.0,10.0,55859,74.45,9.09,65.36,Call,,,,,,,,
-7a96469d,2026-06-08T22:20:25,,2,TURN,Jh Jc,9s 2c Td 7c,UTG,450.0,50.0,55759,73.15,10.0,63.15,Raise_Half,,,,,,,,
-7a96469d,2026-06-08T22:20:39,,2,RIVER,Jh Jc,9s 2c Td 7c 2h,UTG,52000.0,500.0,55259,82.1,0.95,81.15,Raise_Half,,,,,,,,
-7a96469d,2026-06-08T22:21:20,,2,PREFLOP,Js 5s,,BB,50.0,5.0,57899,0.0,9.09,-9.09,Fold,,,,,,,,
-7a96469d,2026-06-08T22:21:21,,2,FLOP,Js 5s,4s 9h Kc,BB,50.0,5.0,57899,28.2,9.09,19.11,Call,,,,,,,,
-7a96469d,2026-06-08T22:21:34,,2,TURN,Js 5s,4s 9h Kc 4d,BB,50.0,5.0,57899,29.1,9.09,20.01,Fold,,,,,,,,

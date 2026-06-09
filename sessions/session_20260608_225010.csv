@@ -1,5 +1,0 @@
-session_id,timestamp,game_id,hand_num,street,hero_cards,board,hero_position,pot_size,amount_to_call,stack,equity_pct,pot_odds_pct,ev_pct,decision,opp_vpip,opp_pfr,opp_af,result_dollars,result_bb,showdown_seen,stack_start,stack_end
-bcf1aa51,2026-06-08T22:51:54,,1,PREFLOP,Kd 3c,,BB,160.0,40.0,57889,0.0,20.0,-20.0,Fold,,,,,,,,
-bcf1aa51,2026-06-08T22:51:54,,1,PREFLOP,Kd 3c,,BB,160.0,40.0,57889,0.0,20.0,-20.0,Fold,,,,,,,,
-bcf1aa51,2026-06-08T22:52:14,,1,FLOP,Kd 3c,6d 9h 4s,BB,530.0,10.0,57769,34.5,1.85,32.65,Fold,,,,,,,,
-bcf1aa51,2026-06-08T22:52:35,,1,TURN,Kd 3c,6d 9h 4s Tc,BB,660.0,100.0,57759,25.05,13.16,11.89,Fold,,,,,,,,
