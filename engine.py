@@ -37,6 +37,7 @@ OCR_KEYS = {
 }
 
 BET_INPUT_COORD = (-1030, 660)
+BIG_BLIND_AMOUNT = 20.0
 
 class OverlayEngine:
     def __init__(self):
@@ -758,6 +759,8 @@ class OverlayEngine:
 
     def _apply_log_bleed_protection(self, frame_data: dict) -> None:
         game_id = frame_data.get('game_id')
+        if not game_id:
+            return
         if game_id and game_id != self.last_known.get('game_id'):
             self.log_memory = ''
             self.last_known['hero_cards'] = None
@@ -1021,12 +1024,13 @@ class OverlayEngine:
 
         action_lower = (action or '').strip().lower()
 
-        if action_lower in {'raise_third', 'raise_half', 'raise_pot'}:
+        if action_lower in {'raise_3bb', 'raise_third', 'raise_half', 'raise_pot'}:
             raise_coord = buttons.get('raise')
             if not raise_coord:
                 print(f"DRY RUN - NO RAISE BUTTON FOUND FOR ACTION: {action}")
                 return False
             sizing_map = {
+                'raise_3bb': BIG_BLIND_AMOUNT * 3.0,
                 'raise_third': pot_size / 3.0,
                 'raise_half': pot_size / 2.0,
                 'raise_pot': pot_size,
@@ -1036,7 +1040,7 @@ class OverlayEngine:
                 f"DRY RUN - WOULD EXECUTE SIZED RAISE: action={action_lower} "
                 f"amount={amount:.2f} raise_button={raise_coord} bet_input={BET_INPUT_COORD}"
             )
-            # self.ghost.execute_sized_raise(BET_INPUT_COORD, amount, raise_coord)
+            # self.ghost.execute_sized_raise(BET_INPUT_COORD, raise_coord, amount)
             return True
 
         if action_lower in {'raise_allin', 'allin'}:

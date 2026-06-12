@@ -73,6 +73,14 @@ class RangeMatrix:
     def update_range_from_action(self, player_id: str, action: str, historical_pfr: Optional[float] = None) -> None:
         self.add_opponent(player_id)
         normalized = action.strip().lower()
+        normalized = {
+            'calls': 'call',
+            'raises': 'raise',
+            'bets': 'raise',
+            'folds': 'fold',
+            'checks': 'check',
+            'limps': 'limp',
+        }.get(normalized, normalized)
         if normalized == 'call':
             self.narrow_top_percent(player_id, 0.45)
             for combo in ['AA', 'KK']:

@@ -71,8 +71,9 @@ class PlayerTracker:
                 self._update_player(player, action, is_preflop)
 
     def _clean_log_bleed(self, log: str) -> str:
-        game_start = re.search(
-            r'Game\s*ID\s*Started[:\s]*([0-9A-Za-z_-]+)', log, re.IGNORECASE
+        game_start = (
+            re.search(r'Game\s+([0-9A-Za-z_-]+)\s+started', log, re.IGNORECASE)
+            or re.search(r'Game\s*ID\s*Started[:\s]*([0-9A-Za-z_-]+)', log, re.IGNORECASE)
         )
         if game_start:
             new_id = game_start.group(1).strip()
